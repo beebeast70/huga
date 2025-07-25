@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earn - BeeBeast</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
+    <style>
+        /* 
+        ========================================
+        CSS STYLES (Properly Formatted)
+        ========================================
+        */
+
+        :root {
+            --background-color: #f4f6f8;
+            --card-color: #ffffff;
+            --primary-text-color: #000000;
+            --secondary-text-color: #5f6368;
+            --accent-color: #ffa500;
+            --white-color: #ffffff;
+            --border-color: #e0e0e0;
+            --success-color: #4CAF50;
+            --error-color: #F44336;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Comfortaa', sans-serif;
+            margin: 0;
+            padding: 85px 20px 20px 20px;
+        }
+
+        .header {
+            background-color: var(--card-color);
+            padding: 0 20px;
+            height: 65px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+        
+        .logo {
+            font-family: 'Bruno Ace SC', sans-serif;
+            font-size: 24px;
+        }
+
+        .logo .beast {
+            color: var(--accent-color);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--primary-text-color);
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            justify-items: center;
+        }
+
+        .task-card {
+            background-color: var(--card-color);
+            border-radius: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .task-card.completed {
+            background-color: #f1f8e9;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.1);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            color: var(--accent-color);
+        }
+        
+        .task-card.completed .card-icon {
+            color: var(--success-color);
+        }
+
+        .task-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-text-color);
+            margin: 15px 0 10px 0;
+        }
+
+        .task-description {
+            font-size: 14px;
+            color: var(--secondary-text-color);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .task-reward {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--success-color);
+            margin-bottom: 25px;
+        }
+
+        .task-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background-color: var(--accent-color);
+            color: var(--white-color);
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .task-button:hover {
+            background-color: #e69500;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
+        }
+        
+        .task-button:disabled {
+            background-color: #cccccc;
+            color: #616161;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .task-card.completed .task-button {
+            background-color: var(--success-color);
+        }
+
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--success-color);
+            color: var(--white-color);
+            text-align: center;
+            border-radius: 15px;
+            padding: 16px;
+            position: fixed;
+            z-index: 2000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.5s, bottom 0.5s;
+        }
+        
+        .toast.error {
+            background-color: var(--error-color);
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+    
+    <header class="header">
+        <div class="logo">Bee<span class="beast">Beast</span></div>
+    </header>
+    
+    <main class="main-content">
+        <h1 class="page-title">Complete Tasks & Earn</h1>
+        <div id="task-grid" class="task-grid"></div>
+    </main>
+    
+    <div id="toast-notification" class="toast"></div>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Firebase Configuration (CRITICAL FIX) ---
+            const firebaseConfig = {
+                apiKey: "AIzaSyC6UH9ItgAF006kc95OQgoTvpD8yGqHmhs",
+                authDomain: "auth-64fa4.firebaseapp.com",
+                databaseURL: "https://auth-64fa4-default-rtdb.firebaseio.com",
+                projectId: "auth-64fa4",
+                storageBucket: "auth-64fa4.firebasestorage.app",
+                messagingSenderId: "859507228555",
+                appId: "1:859507228555:web:f4d4a39a9aa44e0d1d798e",
+                measurementId: "G-C8T3EL92VR"
+            };
+
+            // --- Initialize Firebase ---
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            
+            // --- Element Selection ---
+            const taskGrid = document.getElementById('task-grid');
+            const toast = document.getElementById('toast-notification');
+
+            // --- Authentication Check ---
+            auth.onAuthStateChanged(user => {
+                if (!user) {
+                    window.location.replace('index.html');
+                }
+            });
+
+            // --- Task Data with your Adsterra Direct Links ---
+            const tasks = [
+                { title: 'Explore Partner Site', duration: 15, reward: 0.0012, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
+                { title: 'View Special Offer', duration: 20, reward: 0.0025, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' },
+                { title: 'Read Sponsored Article', duration: 25, reward: 0.0030, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
+                { title: 'Discover New Content', duration: 15, reward: 0.0014, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' },
+                { title: 'Check out this Service', duration: 10, reward: 0.0008, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
+                { title: 'Learn More Here', duration: 18, reward: 0.0018, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' }
+            ];
+
+            // --- Functions ---
+            
+            function showToast(message, isError = false) {
+                toast.textContent = message;
+                toast.className = isError ? 'toast show error' : 'toast show';
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            function startTask(taskCard, button, duration, reward, link) {
+                button.disabled = true;
+                let timeLeft = duration;
+                button.innerHTML = `Verifying... <span>${timeLeft}s</span>`;
+                taskCard.classList.add('pending');
+
+                window.open(link, '_blank');
+                
+                let timeElapsed = false;
+                
+                const countdown = setInterval(() => {
+                    timeLeft--;
+                    button.innerHTML = `Verifying... <span>${timeLeft}s</span>`;
+                    if (timeLeft <= 0) {
+                        clearInterval(countdown);
+                        timeElapsed = true;
+                    }
+                }, 1000);
+
+                const verificationListener = () => {
+                    window.removeEventListener('focus', verificationListener);
+                    clearInterval(countdown);
+
+                    if (timeElapsed) {
+                        let currentBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+                        currentBalance += reward;
+                        localStorage.setItem('userBalance', currentBalance.toFixed(4));
+                        
+                        taskCard.classList.remove('pending');
+                        taskCard.classList.add('completed');
+                        button.innerHTML = '<i class="material-icons-round">check_circle</i> Task Completed';
+                        taskCard.querySelector('.card-icon').textContent = 'check_circle';
+                        
+                        showToast(`+ $${reward.toFixed(4)} Reward Added!`);
+                    } else {
+                        showToast("Verification failed. Please wait for the full duration.", true);
+                        button.disabled = false;
+                        button.innerHTML = 'Start Task';
+                        taskCard.classList.remove('pending');
+                    }
+                };
+                
+                window.addEventListener('focus', verificationListener);
+            }
+
+            function renderTaskCards() {
+                taskGrid.innerHTML = '';
+
+                tasks.forEach(task => {
+                    const taskCard = document.createElement('div');
+                    taskCard.className = 'task-card';
+                    taskCard.innerHTML = `
+                        <i class="material-icons-round card-icon">public</i>
+                        <h3 class="task-title">${task.title}</h3>
+                        <p class="task-description">Click to start, visit the page for <strong>${task.duration} seconds</strong>, and return to claim your reward.</p>
+                        <p class="task-reward">$${task.reward.toFixed(4)}</p>
+                        <button class="task-button">Start Task</button>
+                    `;
+
+                    const taskButton = taskCard.querySelector('.task-button');
+                    taskButton.addEventListener('click', () => {
+                        startTask(taskCard, taskButton, task.duration, task.reward, task.link);
+                    });
+
+                    taskGrid.appendChild(taskCard);
+                });
+            }
+
+            // --- Initial Setup ---
+            renderTaskCards();
+        });
+    </script>
+    
+    <!-- Adsterra Social Bar Ad Code -->
+    <script type='text/javascript' src='//pl27259770.profitableratecpm.com/a4/29/7a/a4297aecf0735a486971d080329154ba.js'></script>
+    
+</body>
+</html>

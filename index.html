@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeeBeast Authentication</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
+    <style>
+        /* 
+        ========================================
+        CSS STYLES (Properly Formatted)
+        ========================================
+        */
+
+        :root {
+            --background-color: #efefef;
+            --card-color: #ffffff;
+            --primary-text-color: #000000;
+            --secondary-text-color: #424242;
+            --accent-color: #ffa500;
+            --white-color: #ffffff;
+            --border-color: #cccccc;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Comfortaa', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        .auth-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        /* Container for smooth transitions */
+        .card-flipper {
+            width: 100%;
+            height: 450px; /* Fixed height for flip effect */
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        /* Flipped state */
+        .card-flipper.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .auth-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            background-color: var(--card-color);
+            border-radius: 35px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Front card */
+        .front-card {
+            /* No special style */
+        }
+
+        /* Back card (username form) */
+        .back-card {
+            transform: rotateY(180deg);
+        }
+
+        .form-title {
+            font-family: 'Comfortaa', sans-serif;
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--secondary-text-color);
+            line-height: 1.4;
+        }
+        
+        .brand-name {
+            font-family: 'Bruno Ace SC', sans-serif;
+            font-size: 48px;
+            display: block;
+            margin-top: 10px;
+            color: var(--primary-text-color);
+        }
+
+        .brand-name .beast {
+            color: var(--accent-color);
+        }
+
+        .google-signin-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            padding: 15px;
+            margin-top: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            background-color: var(--white-color);
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .google-signin-btn:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .google-signin-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Username Form Styles */
+        .username-form {
+            width: 100%;
+            text-align: center;
+        }
+
+        .username-form .form-title {
+            font-size: 20px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 16px;
+            box-sizing: border-box;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 15px;
+            background-color: var(--accent-color);
+            color: var(--white-color);
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        .next-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="auth-container">
+        <div class="card-flipper" id="card-flipper">
+            <div class="card-inner">
+                
+                <!-- Front Card: Signin with Google -->
+                <div class="auth-card front-card">
+                    <h2 class="form-title">
+                        Please signin or signup to
+                        <span class="brand-name">Bee<span class="beast">Beast</span></span>
+                    </h2>
+                    <button id="google-signin-btn" class="google-signin-btn">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+                        Sign in with Google
+                    </button>
+                </div>
+
+                <!-- Back Card: Set Username -->
+                <div class="auth-card back-card">
+                    <form id="username-form" class="username-form">
+                        <h2 class="form-title">
+                            Welcome!
+                            <br>
+                            What should we call you?
+                        </h2>
+                        <input type="text" id="username-input" class="input-field" placeholder="Enter your name" required>
+                        <button type="submit" id="next-btn" class="next-btn" disabled>Next</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* 
+            ========================================
+            JAVASCRIPT LOGIC
+            ========================================
+            */
+
+            // --- Firebase Configuration ---
+            const firebaseConfig = {
+                apiKey: "AIzaSyC6UH9ItgAF006kc95OQgoTvpD8yGqHmhs",
+                authDomain: "auth-64fa4.firebaseapp.com",
+                databaseURL: "https://auth-64fa4-default-rtdb.firebaseio.com",
+                projectId: "auth-64fa4",
+                storageBucket: "auth-64fa4.firebasestorage.app",
+                messagingSenderId: "859507228555",
+                appId: "1:859507228555:web:f4d4a39a9aa44e0d1d798e",
+                measurementId: "G-C8T3EL92VR"
+            };
+
+            // --- Initialize Firebase ---
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+            // --- DOM Element Selection ---
+            const googleSigninButton = document.getElementById('google-signin-btn');
+            const cardFlipper = document.getElementById('card-flipper');
+            const usernameForm = document.getElementById('username-form');
+            const usernameInput = document.getElementById('username-input');
+            const nextButton = document.getElementById('next-btn');
+
+            // --- Functions ---
+            
+            // Check if user is already logged in
+            auth.onAuthStateChanged(user => {
+                if (user && user.displayName) {
+                    // If user is logged in and has a name, redirect to home
+                    window.location.href = 'home.html';
+                }
+            });
+
+            // --- Event Listeners ---
+            
+            // Google Sign-In Button
+            googleSigninButton.addEventListener('click', () => {
+                auth.signInWithPopup(googleProvider)
+                    .then((result) => {
+                        const user = result.user;
+                        
+                        // Check if the user already has a display name set
+                        if (user.displayName) {
+                            // If yes, redirect to home
+                            window.location.href = 'home.html';
+                        } else {
+                            // If no name, show the username form
+                            cardFlipper.classList.add('flipped');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Google Sign-in Error:", error.message);
+                        alert(`Sign-in failed: ${error.message}`);
+                    });
+            });
+
+            // Enable/disable Next button based on input
+            usernameInput.addEventListener('input', () => {
+                if (usernameInput.value.trim().length > 2) {
+                    nextButton.disabled = false;
+                } else {
+                    nextButton.disabled = true;
+                }
+            });
+            
+            // Username Form Submission
+            usernameForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const user = auth.currentUser;
+                const newName = usernameInput.value.trim();
+
+                if (user && newName) {
+                    // Update the user's profile with the new name
+                    user.updateProfile({
+                        displayName: newName
+                    }).then(() => {
+                        // Redirect to home page after successfully setting the name
+                        window.location.href = 'home.html';
+                    }).catch((error) => {
+                        console.error("Error updating profile:", error.message);
+                        alert(`Could not set your name. Please try again.`);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

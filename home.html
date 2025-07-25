@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - BeeBeast</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
+    <style>
+        /* 
+        ========================================
+        CSS STYLES (Properly Formatted)
+        ========================================
+        */
+
+        :root {
+            --background-color: #f4f6f8;
+            --card-color: #ffffff;
+            --primary-text-color: #000000;
+            --secondary-text-color: #5f6368;
+            --accent-color: #ffa500;
+            --white-color: #ffffff;
+            --border-color: #e0e0e0;
+            --success-color: #4CAF50;
+            --progress-bar-background: #eeeeee;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Comfortaa', sans-serif;
+            margin: 0;
+            padding-top: 65px;
+        }
+
+        /* --- Header Section --- */
+        .header {
+            background-color: var(--white-color);
+            padding: 0 20px;
+            height: 65px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        .header-left, 
+        .header-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-right { 
+            justify-content: flex-end; 
+        }
+
+        .header-center { 
+            flex: 2; 
+            text-align: center; 
+        }
+
+        .logo {
+            font-family: 'Bruno Ace SC', sans-serif;
+            font-size: 24px;
+        }
+
+        .logo .beast { 
+            color: var(--accent-color); 
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            background-color: #fff0e1;
+            background-size: cover;
+            background-position: center;
+            border: 3px solid var(--accent-color);
+        }
+
+        /* --- Profile Popup Section --- */
+        .profile-popup {
+            position: fixed;
+            top: 75px;
+            right: 20px;
+            z-index: 1001;
+            width: 320px;
+            background-color: var(--card-color);
+            border-radius: 28px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+            padding: 16px;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+            visibility: hidden;
+            transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transform-origin: top right;
+        }
+
+        .profile-popup.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            visibility: visible;
+        }
+        
+        .popup-user-info {
+            display: flex;
+            align-items: center;
+            padding-bottom: 16px;
+            position: relative;
+        }
+
+        .popup-user-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background-color: #fff8f0;
+        }
+
+        .popup-user-details .user-name {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .popup-user-details .user-email {
+            font-size: 13px;
+            color: var(--secondary-text-color);
+        }
+
+        .edit-name-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--secondary-text-color);
+            padding: 5px;
+        }
+
+        .popup-balance-section {
+            padding: 16px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            margin-top: 16px;
+        }
+
+        .popup-balance-section .label {
+            color: var(--secondary-text-color);
+            font-size: 13px;
+        }
+
+        .popup-balance-section .amount {
+            color: var(--primary-text-color);
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        
+        .change-photo-btn {
+            display: block;
+            width: 100%;
+            margin: 16px 0;
+            padding: 10px;
+            font-family: 'Comfortaa', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--accent-color);
+            background-color: transparent;
+            border: 3px solid var(--accent-color);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .change-photo-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--white-color);
+        }
+        
+        .popup-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            padding: 16px 0 0 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 16px;
+        }
+
+        .popup-btn {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .popup-deposit-btn {
+            background-color: var(--accent-color);
+            color: var(--white-color);
+        }
+
+        .popup-withdraw-btn:disabled {
+            background-color: #cccccc;
+            color: #616161;
+            cursor: not-allowed;
+        }
+
+        .popup-menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0 0 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .popup-menu-item {
+            padding: 12px 5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .popup-menu-item a {
+            text-decoration: none;
+            color: var(--secondary-text-color);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s ease;
+        }
+
+        .popup-menu-item a:hover {
+            color: var(--accent-color);
+        }
+
+        .popup-menu-item a i {
+            margin-right: 15px;
+        }
+
+        .logout-btn-wrapper {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+        }
+
+        .logout-btn {
+            background: none; 
+            border: none; 
+            color: var(--secondary-text-color); 
+            font-family: 'Comfortaa', sans-serif; 
+            font-weight: 600; 
+            font-size: 14px;
+            cursor: pointer; 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .logout-btn:hover { 
+            background-color: #fcece5; 
+            color: #d9534f; 
+        }
+        
+        .image-picker-popup {
+            display: none;
+            position: absolute;
+            top: 245px;
+            left: 0;
+            width: 100%;
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 15px;
+            box-sizing: border-box;
+            z-index: 1002;
+        }
+
+        .image-picker-grid {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        .image-choice {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+            transition: border-color 0.2s ease;
+        }
+
+        .image-choice:hover {
+            border-color: var(--accent-color);
+        }
+
+        .goal-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .goal-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .goal-modal.dismiss {
+            opacity: 0;
+        }
+
+        .goal-modal-content {
+            background-color: var(--card-color);
+            padding: 30px;
+            width: 90%;
+            max-width: 340px;
+            border-radius: 35px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: scale(0.9) translateY(-10px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .goal-modal.show .goal-modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        .goal-modal.dismiss .goal-modal-content {
+            transform: scale(0.9) translateY(-10px);
+        }
+        
+        .goal-modal-icon {
+            font-size: 60px;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .goal-modal-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 15px;
+            background-color: var(--accent-color);
+            color: var(--white-color);
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .hero-section { 
+            background-color: var(--accent-color); 
+            padding: 40px 20px 120px 20px; 
+            position: relative; 
+        }
+
+        .wave-container { 
+            position: absolute; 
+            bottom: -1px; 
+            left: 0; 
+            width: 100%; 
+            line-height: 0; 
+        }
+
+        .wave-container svg { 
+            display: block; 
+            width: 100%; 
+            height: 100px; 
+        }
+
+        .wave-container .shape-fill { 
+            fill: var(--background-color); 
+        }
+        
+        .main-content { 
+            position: relative; 
+            z-index: 10; 
+            margin-top: -100px; 
+            padding: 0 20px 20px 20px; 
+        }
+
+        .content-card { 
+            background-color: var(--card-color); 
+            border-radius: 35px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
+            padding: 25px; 
+            margin: 0 auto 25px auto; 
+            max-width: 500px; 
+        }
+
+        .balance-card { 
+            text-align: center; 
+        }
+        
+        .progress-container { 
+            position: relative; 
+            width: 150px; 
+            height: 150px; 
+            margin: 0 auto 20px auto; 
+        }
+
+        .progress-svg { 
+            transform: rotate(-90deg); 
+            overflow: visible; 
+        }
+
+        .progress-circle-bg, 
+        .progress-circle-bar { 
+            fill: none; 
+            stroke-width: 12; 
+        }
+
+        .progress-circle-bg { 
+            stroke: var(--progress-bar-background); 
+        }
+
+        .progress-circle-bar {
+            stroke: var(--accent-color);
+            stroke-dasharray: 408;
+            stroke-dashoffset: 408;
+            stroke-linecap: round; 
+            transition: stroke-dashoffset 1s ease-out;
+            filter: url(#wave-filter);
+        }
+        
+        .progress-text { 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            font-weight: 700; 
+        }
+
+        .balance-amount { 
+            font-size: 24px; 
+        }
+
+        .balance-limit { 
+            font-size: 14px; 
+            color: var(--secondary-text-color); 
+        }
+
+        .earn-button {
+            display: inline-block; 
+            text-decoration: none; 
+            width: 80%; 
+            margin-top: 25px; 
+            padding: 15px; 
+            border-radius: 15px;
+            background-color: var(--accent-color); 
+            color: var(--white-color); 
+            font-weight: 700; 
+            font-size: 18px; 
+            transition: all 0.3s ease;
+        }
+
+        .earn-button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4); 
+        }
+
+        .section-title { 
+            text-align: center; 
+            font-size: 20px; 
+            font-weight: 700; 
+            margin-bottom: 20px; 
+            color: var(--primary-text-color); 
+        }
+
+        .referral-link-container { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px; 
+        }
+
+        .referral-link-input { 
+            flex-grow: 1; 
+            padding: 10px 15px; 
+            font-size: 14px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            background-color: #f9f9f9; 
+        }
+
+        .copy-btn { 
+            background-color: var(--secondary-text-color); 
+            color: var(--white-color); 
+            border: none; 
+            border-radius: 12px; 
+            padding: 0 15px; 
+            cursor: pointer; 
+        }
+
+        .referral-desc { 
+            font-size: 14px; 
+            color: var(--secondary-text-color); 
+            line-height: 1.6; 
+            margin-top: 20px; 
+            text-align: center; 
+        }
+
+        .empty-list-message { 
+            text-align: center; 
+            color: var(--secondary-text-color); 
+            padding: 20px 0; 
+            font-style: italic; 
+        }
+    </style>
+</head>
+<body>
+
+    <svg width="0" height="0" style="position:absolute;">
+        <defs>
+            <filter id="wave-filter">
+                <feTurbulence baseFrequency="0.02 0.05" numOctaves="1" seed="2" type="fractalNoise">
+                    <animate attributeName="baseFrequency" dur="2s" keyTimes="0;0.5;1" values="0.02 0.05;0.03 0.08;0.02 0.05" repeatCount="indefinite" />
+                </feTurbulence>
+                <feDisplacementMap in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <header class="header">
+        <div class="header-left"></div>
+        <div class="header-center">
+            <div class="logo">Bee<span class="beast">Beast</span></div>
+        </div>
+        <div class="header-right">
+            <div id="profile-icon" class="profile-icon"></div>
+        </div>
+    </header>
+
+    <div id="profile-popup" class="profile-popup">
+        <div class="popup-user-info">
+            <img id="popup-profile-img" src="" alt="User Avatar">
+            <div class="popup-user-details">
+                <div class="user-name">Loading...</div>
+                <div class="user-email">Loading...</div>
+            </div>
+            <button id="edit-name-btn" class="edit-name-btn">
+                <i class="material-icons-round">edit</i>
+            </button>
+        </div>
+        <div class="popup-balance-section">
+            <div class="label">Your Balance</div>
+            <div id="popup-balance-amount" class="amount">$0.00</div>
+        </div>
+        <button id="change-photo-btn" class="change-photo-btn">Change Profile Photo</button>
+        <div id="image-picker-popup" class="image-picker-popup">
+            <div class="image-picker-grid">
+                <div class="image-choice" data-img-src="https://i.ibb.co/7xm0W9MC/6b9cbc0b8289b3f36e859909bce507d9.jpg"></div>
+                <div class="image-choice" data-img-src="https://i.ibb.co/35tL3JzC/1ad6d782e126ea30666e008206f391f4.jpg"></div>
+                <div class="image-choice" data-img-src="https://i.ibb.co/1GcY6gZd/209fa4e7acfacee55a08887b0c123a94.jpg"></div>
+            </div>
+        </div>
+        <div class="popup-actions">
+             <button id="popup-withdraw-btn" class="popup-btn popup-withdraw-btn" disabled>Withdraw</button>
+             <a href="deposit.html" class="popup-btn popup-deposit-btn">Deposit</a>
+        </div>
+        <ul class="popup-menu-list">
+            <li class="popup-menu-item"><a href="beebeast/0/terms.html"><i class="material-icons-round">description</i>Terms of Use</a></li>
+            <li class="popup-menu-item"><a href="beebeast/0/privacy.html"><i class="material-icons-round">privacy_tip</i>Privacy Policy</a></li>
+            <li class="popup-menu-item"><a href="beebeast/0/about.html"><i class="material-icons-round">info</i>About</a></li>
+            <li class="popup-menu-item"><a href="beebeast/0/contact.html"><i class="material-icons-round">alternate_email</i>Contact</a></li>
+        </ul>
+        <div class="logout-btn-wrapper">
+             <button class="logout-btn"><i class="material-icons-round">logout</i>Logout</button>
+        </div>
+    </div>
+
+    <main>
+        <section class="hero-section">
+            <div class="wave-container">
+                <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill-opacity="1" class="shape-fill" d="M0,224L48,208C96,192,192,160,288,165.3C384,171,480,213,576,213.3C672,213,768,171,864,149.3C960,128,1056,128,1152,149.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
+            </div>
+        </section>
+        <div class="main-content">
+             <div class="balance-card content-card">
+                <div class="progress-container">
+                    <svg class="progress-svg" width="150" height="150"><circle class="progress-circle-bg" cx="75" cy="75" r="65"></circle><circle class="progress-circle-bar" id="progress-bar" cx="75" cy="75" r="65"></circle></svg>
+                    <div class="progress-text"><div class="balance-amount" id="balance-amount-text">$0.00</div><div class="balance-limit">/ $20.00</div></div>
+                </div>
+                <p style="font-size: 14px; color: var(--secondary-text-color); margin-bottom: 20px;">Withdrawal goal</p>
+                <a href="earn.html" class="earn-button">Start Earning</a>
+            </div>
+            <h2 class="section-title">Refer & Earn</h2>
+            <div class="referral-card content-card">
+                <p class="referral-desc">Invite friends and get <strong>5%</strong> of their every withdrawal, for life!</p>
+                <div class="referral-link-container">
+                    <input type="text" id="referral-link-input" class="referral-link-input" value="Loading..." readonly>
+                    <button id="copy-btn" class="copy-btn"><i class="material-icons-round">content_copy</i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div id="goal-modal" class="goal-modal">
+        <div class="goal-modal-content">
+            <i class="material-icons-round goal-modal-icon">track_changes</i>
+            <h3 class="section-title">Goal Not Reached</h3>
+            <p>You need to collect at least $20.00 to enable the withdraw button. Keep earning!</p>
+            <button id="goal-modal-close" class="goal-modal-button">Okay</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const WITHDRAWAL_LIMIT = 20.00;
+            const DEFAULT_PROFILE_IMAGE = 'https://i.ibb.co/7xm0W9MC/6b9cbc0b8289b3f36e859909bce507d9.jpg';
+            const firebaseConfig = {
+                apiKey: "AIzaSyC6UH9ItgAF006kc95OQgoTvpD8yGqHmhs",
+                authDomain: "auth-64fa4.firebaseapp.com",
+                databaseURL: "https://auth-64fa4-default-rtdb.firebaseio.com",
+                projectId: "auth-64fa4",
+                storageBucket: "auth-64fa4.firebasestorage.app",
+                messagingSenderId: "859507228555",
+                appId: "1:859507228555:web:f4d4a39a9aa44e0d1d798e",
+                measurementId: "G-C8T3EL92VR"
+            };
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            
+            const profileIcon = document.getElementById('profile-icon'),
+                  profilePopup = document.getElementById('profile-popup'),
+                  popupProfileImg = document.getElementById('popup-profile-img'),
+                  userNameElement = document.querySelector('.user-name'),
+                  userEmailElement = document.querySelector('.user-email'),
+                  logoutButton = document.querySelector('.logout-btn'),
+                  balanceAmountText = document.getElementById('balance-amount-text'),
+                  popupBalanceAmount = document.getElementById('popup-balance-amount'),
+                  progressBar = document.getElementById('progress-bar'),
+                  changePhotoButton = document.getElementById('change-photo-btn'),
+                  imagePickerPopup = document.getElementById('image-picker-popup'),
+                  imageChoices = document.querySelectorAll('.image-choice'),
+                  popupWithdrawButton = document.getElementById('popup-withdraw-btn'),
+                  goalModal = document.getElementById('goal-modal'),
+                  goalModalCloseButton = document.getElementById('goal-modal-close'),
+                  editNameButton = document.getElementById('edit-name-btn'),
+                  referralLinkInput = document.getElementById('referral-link-input'),
+                  copyButton = document.getElementById('copy-btn');
+
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    loadProfileImage();
+                    userNameElement.textContent = user.displayName;
+                    userEmailElement.textContent = user.email;
+                    referralLinkInput.value = `https://beebeast.ct.ws/?ref=${user.uid}`;
+                    updateBalanceUI();
+                } else {
+                    window.location.replace('index.html');
+                }
+            });
+
+            function updateBalanceUI() {
+                let currentBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+                const progressPercentage = Math.min((currentBalance / WITHDRAWAL_LIMIT) * 100, 100);
+                balanceAmountText.textContent = `$${currentBalance.toFixed(2)}`;
+                popupBalanceAmount.textContent = `$${currentBalance.toFixed(2)}`;
+                const circumference = 2 * Math.PI * 65;
+                progressBar.style.strokeDashoffset = circumference - (progressPercentage / 100) * circumference;
+                popupWithdrawButton.disabled = currentBalance < WITHDRAWAL_LIMIT;
+            }
+            
+            function setProfileImage(url) {
+                profileIcon.style.backgroundImage = `url(${url})`;
+                popupProfileImg.src = url;
+            }
+
+            function loadProfileImage() {
+                const savedImageUrl = localStorage.getItem('profileImageUrl');
+                setProfileImage(savedImageUrl || DEFAULT_PROFILE_IMAGE);
+            }
+            
+            function capitalizeName(name) {
+                if (!name) return '';
+                return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+            }
+
+            editNameButton.addEventListener('click', () => {
+                const user = auth.currentUser;
+                const currentName = user.displayName;
+                const newName = prompt("Enter your new name:", currentName);
+
+                if (newName && newName.trim() !== "" && newName.trim() !== currentName) {
+                    const formattedName = capitalizeName(newName.trim());
+                    user.updateProfile({ displayName: formattedName })
+                        .then(() => {
+                            userNameElement.textContent = formattedName;
+                            alert("Name updated successfully!");
+                        })
+                        .catch(error => console.error("Error updating name:", error));
+                }
+            });
+
+            copyButton.addEventListener('click', () => {
+                navigator.clipboard.writeText("https://beebeast.ct.ws").then(() => {
+                    const original = copyButton.innerHTML;
+                    copyButton.innerHTML = '<i class="material-icons-round">check</i>';
+                    setTimeout(() => { copyButton.innerHTML = original; }, 2000);
+                });
+            });
+
+            profileIcon.addEventListener('click', e => {
+                e.stopPropagation();
+                profilePopup.classList.toggle('show');
+                imagePickerPopup.style.display = 'none';
+            });
+
+            logoutButton.addEventListener('click', () => {
+                localStorage.clear();
+                auth.signOut();
+            });
+
+            document.addEventListener('click', e => {
+                if (!profilePopup.contains(e.target) && !profileIcon.contains(e.target)) {
+                    profilePopup.classList.remove('show');
+                }
+            });
+            
+            changePhotoButton.addEventListener('click', e => {
+                e.stopPropagation();
+                imagePickerPopup.style.display = imagePickerPopup.style.display === 'block' ? 'none' : 'block';
+            });
+
+            imageChoices.forEach(choice => {
+                const imgSrc = choice.dataset.imgSrc;
+                choice.style.backgroundImage = `url(${imgSrc})`;
+                choice.addEventListener('click', () => {
+                    setProfileImage(imgSrc);
+                    localStorage.setItem('profileImageUrl', imgSrc);
+                    imagePickerPopup.style.display = 'none';
+                });
+            });
+            
+            popupWithdrawButton.addEventListener('click', () => {
+                if (popupWithdrawButton.disabled) {
+                    goalModal.classList.add('show');
+                } else {
+                    alert("Withdrawal Process Started!");
+                }
+            });
+
+            goalModalCloseButton.addEventListener('click', () => {
+                goalModal.classList.add('dismiss');
+                setTimeout(() => {
+                    goalModal.classList.remove('show');
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>

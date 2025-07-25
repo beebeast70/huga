@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit - BeeBeast</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
+    <style>
+        /* 
+        ========================================
+        CSS STYLES
+        ========================================
+        */
+
+        /* --- Root Variables & Basic Styles --- */
+        :root {
+            --background-color: #f4f6f8;
+            --card-color: #ffffff;
+            --primary-text-color: #000000;
+            --secondary-text-color: #5f6368;
+            --accent-color: #ffa500;
+            --white-color: #ffffff;
+            --border-color: #e0e0e0;
+            --success-color: #4CAF50;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Comfortaa', sans-serif;
+            margin: 0;
+            padding: 85px 20px 20px 20px;
+        }
+
+        /* --- Header (Simplified) --- */
+        .header {
+            background-color: var(--white-color);
+            padding: 0 20px;
+            height: 65px;
+            display: flex;
+            justify-content: center; /* Center the logo */
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+        
+        .logo { 
+            font-family: 'Bruno Ace SC', sans-serif; 
+            font-size: 24px; 
+        }
+
+        .logo .beast { 
+            color: var(--accent-color); 
+        }
+
+        /* --- Deposit Page Specific Styles --- */
+        .content-card {
+            background-color: var(--card-color);
+            border-radius: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin: 0 auto 25px auto;
+            max-width: 500px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--primary-text-color);
+        }
+
+        .network-tabs {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f0f0f0;
+            border-radius: 18px;
+            padding: 5px;
+            margin-bottom: 25px;
+        }
+
+        .network-tab {
+            flex: 1;
+            padding: 12px 10px;
+            text-align: center;
+            font-weight: 600;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .network-tab.active {
+            background-color: var(--accent-color);
+            color: var(--white-color);
+            box-shadow: 0 4px 10px rgba(255, 165, 0, 0.3);
+        }
+
+        .deposit-content {
+            display: none;
+            text-align: center;
+        }
+
+        .deposit-content.active {
+            display: block;
+        }
+        
+        .qr-code {
+            max-width: 200px;
+            height: auto;
+            margin: 10px auto 20px auto;
+            border-radius: 16px;
+            border: 2px solid var(--border-color);
+        }
+
+        .address-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .address-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background-color: #f9f9f9;
+            color: var(--secondary-text-color);
+            font-family: monospace;
+        }
+        
+        .copy-btn {
+            background-color: var(--secondary-text-color);
+            color: var(--white-color);
+            border: none;
+            border-radius: 12px;
+            height: 45px;
+            width: 50px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: #333;
+        }
+
+        .deposit-instructions {
+            background-color: #fff8e1;
+            border: 1px solid #ffe5b0;
+            color: #7d5a19;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 16px;
+            font-size: 13px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .deposit-instructions ul {
+            padding-left: 20px;
+            margin: 10px 0 0 0;
+        }
+        
+        .request-button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 15px;
+            background-color: var(--accent-color);
+            color: var(--white-color);
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        .request-button:hover {
+            background-color: var(--accent-color);
+        }
+        
+        /* --- Success Modal --- */
+        .success-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .success-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .success-modal-content {
+            background-color: var(--card-color);
+            padding: 30px;
+            width: 90%;
+            max-width: 340px;
+            border-radius: 35px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .success-modal.show .success-modal-content {
+            transform: scale(1);
+        }
+        
+        .success-modal-icon {
+            font-size: 60px;
+            color: var(--success-color);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 
+    ========================================
+    HTML STRUCTURE
+    ========================================
+    -->
+
+    <!-- Header Section (Simplified) -->
+    <header class="header">
+        <div class="header-center">
+            <div class="logo">Bee<span class="beast">Beast</span></div>
+        </div>
+    </header>
+
+    <!-- Main Content for Deposit Page -->
+    <main>
+        <div class="content-card">
+            <h2 class="section-title">Deposit USDT</h2>
+
+            <!-- Network Selection Tabs -->
+            <div class="network-tabs">
+                <div class="network-tab active" data-network="trc20">TRC20</div>
+                <div class="network-tab" data-network="bnb">BNB</div>
+                <div class="network-tab" data-network="eth">ETH</div>
+            </div>
+
+            <!-- Content for TRC20 Network -->
+            <div id="content-trc20" class="deposit-content active">
+                <p>Scan the QR code or copy the address below.</p>
+                <img id="qr-trc20" class="qr-code" src="" alt="TRC20 QR Code">
+                <div class="address-container">
+                    <input type="text" id="address-trc20" class="address-input" readonly>
+                    <button class="copy-btn" data-target="address-trc20">
+                        <i class="material-icons-round">content_copy</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content for BNB Network -->
+            <div id="content-bnb" class="deposit-content">
+                <p>Scan the QR code or copy the address below.</p>
+                <img id="qr-bnb" class="qr-code" src="" alt="BNB QR Code">
+                <div class="address-container">
+                    <input type="text" id="address-bnb" class="address-input" readonly>
+                    <button class="copy-btn" data-target="address-bnb">
+                        <i class="material-icons-round">content_copy</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content for ETH Network -->
+            <div id="content-eth" class="deposit-content">
+                <p>Scan the QR code or copy the address below.</p>
+                <img id="qr-eth" class="qr-code" src="" alt="ETH QR Code">
+                <div class="address-container">
+                    <input type="text" id="address-eth" class="address-input" readonly>
+                    <button class="copy-btn" data-target="address-eth">
+                        <i class="material-icons-round">content_copy</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Important Instructions -->
+            <div class="deposit-instructions">
+                <p><strong>Important:</strong></p>
+                <ul>
+                    <li>Send only <strong>USDT</strong> to this deposit address.</li>
+                    <li>Ensure the network you choose matches your wallet's network.</li>
+                    <li>Sending any other coin may result in the loss of your deposit.</li>
+                </ul>
+            </div>
+            
+            <!-- Submit Request Button -->
+            <button id="request-button" class="request-button">Submit Request</button>
+
+        </div>
+    </main>
+    
+    <!-- Success Modal -->
+    <div id="success-modal" class="success-modal">
+        <div class="success-modal-content">
+            <i class="material-icons-round success-modal-icon">check_circle</i>
+            <h3 class="section-title">Request Sent!</h3>
+            <p>Your deposit request has been sent successfully. Please wait for the balance to be added to your account.</p>
+        </div>
+    </div>
+
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            /* 
+            ========================================
+            JAVASCRIPT LOGIC
+            ========================================
+            */
+           
+            // --- 1. EDIT YOUR DEPOSIT ADDRESSES HERE ---
+            const depositAddresses = {
+                trc20: "0x5ba4Bb38FF2bEA992f5D0E32d4cc004967e97E95",
+                bnb:   "0x39A0aFcB868cA4c08F90489219ac64E5B8a1c007",
+                eth:   "0x39A0aFcB868cA4c08F90489219ac64E5B8a1c007"
+            };
+
+            // --- 2. EDIT YOUR QR CODE IMAGE URLs HERE (from imgbb.com or other host) ---
+            const qrCodeImageUrls = {
+                trc20: "https://i.postimg.cc/vHMRHQTj/IMG-20250724-085145-139.jpg",
+                  bnb:  "https://i.postimg.cc/dVHgBr6P/IMG-20250724-085141-651.jpg",
+                eth:   "https://i.postimg.cc/GhJCk46d/IMG-20250724-085135-515.jpg"
+            };
+            
+            // --- Firebase Configuration ---
+            const firebaseConfig = {
+                apiKey: "AIzaSyC6UH9ItgAF006kc95OQgoTvpD8yGqHmhs",
+                authDomain: "auth-64fa4.firebaseapp.com",
+                databaseURL: "https://auth-64fa4-default-rtdb.firebaseio.com",
+                projectId: "auth-64fa4",
+                storageBucket: "auth-64fa4.firebasestorage.app",
+                messagingSenderId: "859507228555",
+                appId: "1:859507228555:web:f4d4a39a9aa44e0d1d798e",
+                measurementId: "G-C8T3EL92VR"
+            };
+
+            // --- Initialize Firebase ---
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            
+            // --- Element Selection ---
+            const networkTabs = document.querySelectorAll('.network-tab');
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            const requestButton = document.getElementById('request-button');
+            const successModal = document.getElementById('success-modal');
+
+            // --- Authentication Check ---
+            auth.onAuthStateChanged(user => {
+                if (!user) {
+                    // If no user is signed in, redirect to login page.
+                    window.location.replace('index.html');
+                }
+            });
+            
+            // --- Main Functions ---
+            function initializeDepositData() {
+                for (const network in depositAddresses) {
+                    // Set the wallet address in the input field
+                    document.getElementById(`address-${network}`).value = depositAddresses[network];
+                    
+                    // Set the QR code image from your URL
+                    document.getElementById(`qr-${network}`).src = qrCodeImageUrls[network];
+                }
+            }
+
+            // --- Event Listeners ---
+
+            // Network Tab Switching Logic
+            networkTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    networkTabs.forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.deposit-content').forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    const network = tab.dataset.network;
+                    document.getElementById(`content-${network}`).classList.add('active');
+                });
+            });
+
+            // Copy Button Logic
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    const addressInput = document.getElementById(targetId);
+                    
+                    navigator.clipboard.writeText(addressInput.value).then(() => {
+                        const originalIcon = button.innerHTML;
+                        button.innerHTML = '<i class="material-icons-round">check</i>';
+                        setTimeout(() => { 
+                            button.innerHTML = originalIcon;
+                        }, 2000);
+                    });
+                });
+            });
+
+            // Request Button Logic
+            requestButton.addEventListener('click', () => {
+                // Show the success modal
+                successModal.classList.add('show');
+
+                // Wait 4 seconds, then redirect to home
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 4000);
+            });
+
+            // --- Initial Setup on Page Load ---
+            initializeDepositData();
+        });
+    </script>
+</body>
+</html>
