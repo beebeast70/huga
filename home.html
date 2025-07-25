@@ -34,7 +34,45 @@
             padding-top: 65px;
         }
 
-        /* --- Header Section --- */
+        .adblock-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .adblock-modal {
+            background-color: var(--card-color);
+            padding: 30px;
+            border-radius: 35px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            z-index: 9999;
+        }
+
+        .adblock-modal-icon {
+            font-size: 60px;
+            color: #F44336;
+            margin-bottom: 15px;
+        }
+
+        .adblock-modal h2 {
+            font-size: 22px;
+            color: var(--primary-text-color);
+        }
+
+        .adblock-modal p {
+            color: var(--secondary-text-color);
+            line-height: 1.6;
+        }
+
         .header {
             background-color: var(--white-color);
             padding: 0 20px;
@@ -51,20 +89,20 @@
             box-sizing: border-box;
         }
 
-        .header-left, 
+        .header-left,
         .header-right {
             flex: 1;
             display: flex;
             align-items: center;
         }
         
-        .header-right { 
-            justify-content: flex-end; 
+        .header-right {
+            justify-content: flex-end;
         }
 
-        .header-center { 
-            flex: 2; 
-            text-align: center; 
+        .header-center {
+            flex: 2;
+            text-align: center;
         }
 
         .logo {
@@ -72,8 +110,8 @@
             font-size: 24px;
         }
 
-        .logo .beast { 
-            color: var(--accent-color); 
+        .logo .beast {
+            color: var(--accent-color);
         }
 
         .profile-icon {
@@ -87,7 +125,6 @@
             border: 3px solid var(--accent-color);
         }
 
-        /* --- Profile Popup Section --- */
         .profile-popup {
             position: fixed;
             top: 75px;
@@ -265,30 +302,30 @@
         }
 
         .logout-btn {
-            background: none; 
-            border: none; 
-            color: var(--secondary-text-color); 
-            font-family: 'Comfortaa', sans-serif; 
-            font-weight: 600; 
+            background: none;
+            border: none;
+            color: var(--secondary-text-color);
+            font-family: 'Comfortaa', sans-serif;
+            font-weight: 600;
             font-size: 14px;
-            cursor: pointer; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
             gap: 8px;
             transition: background-color 0.2s ease, color 0.2s ease;
         }
 
-        .logout-btn:hover { 
-            background-color: #fcece5; 
-            color: #d9534f; 
+        .logout-btn:hover {
+            background-color: #fcece5;
+            color: #d9534f;
         }
         
         .image-picker-popup {
             display: none;
             position: absolute;
-            top: 245px;
+            top: 305px;
             left: 0;
             width: 100%;
             background-color: var(--card-color);
@@ -385,162 +422,162 @@
             cursor: pointer;
         }
 
-        .hero-section { 
-            background-color: var(--accent-color); 
-            padding: 40px 20px 120px 20px; 
-            position: relative; 
+        .hero-section {
+            background-color: var(--accent-color);
+            padding: 40px 20px 120px 20px;
+            position: relative;
         }
 
-        .wave-container { 
-            position: absolute; 
-            bottom: -1px; 
-            left: 0; 
-            width: 100%; 
-            line-height: 0; 
+        .wave-container {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            line-height: 0;
         }
 
-        .wave-container svg { 
-            display: block; 
-            width: 100%; 
-            height: 100px; 
+        .wave-container svg {
+            display: block;
+            width: 100%;
+            height: 100px;
         }
 
-        .wave-container .shape-fill { 
-            fill: var(--background-color); 
+        .wave-container .shape-fill {
+            fill: var(--background-color);
         }
         
-        .main-content { 
-            position: relative; 
-            z-index: 10; 
-            margin-top: -100px; 
-            padding: 0 20px 20px 20px; 
+        .main-content {
+            position: relative;
+            z-index: 10;
+            margin-top: -100px;
+            padding: 0 20px 20px 20px;
         }
 
-        .content-card { 
-            background-color: var(--card-color); 
-            border-radius: 35px; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
-            padding: 25px; 
-            margin: 0 auto 25px auto; 
-            max-width: 500px; 
+        .content-card {
+            background-color: var(--card-color);
+            border-radius: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin: 0 auto 25px auto;
+            max-width: 500px;
         }
 
-        .balance-card { 
-            text-align: center; 
+        .balance-card {
+            text-align: center;
         }
         
-        .progress-container { 
-            position: relative; 
-            width: 150px; 
-            height: 150px; 
-            margin: 0 auto 20px auto; 
+        .progress-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px auto;
         }
 
-        .progress-svg { 
-            transform: rotate(-90deg); 
-            overflow: visible; 
+        .progress-svg {
+            transform: rotate(-90deg);
+            overflow: visible;
         }
 
-        .progress-circle-bg, 
-        .progress-circle-bar { 
-            fill: none; 
-            stroke-width: 12; 
+        .progress-circle-bg,
+        .progress-circle-bar {
+            fill: none;
+            stroke-width: 12;
         }
 
-        .progress-circle-bg { 
-            stroke: var(--progress-bar-background); 
+        .progress-circle-bg {
+            stroke: var(--progress-bar-background);
         }
 
         .progress-circle-bar {
             stroke: var(--accent-color);
             stroke-dasharray: 408;
             stroke-dashoffset: 408;
-            stroke-linecap: round; 
+            stroke-linecap: round;
             transition: stroke-dashoffset 1s ease-out;
             filter: url(#wave-filter);
         }
         
-        .progress-text { 
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            font-weight: 700; 
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 700;
         }
 
-        .balance-amount { 
-            font-size: 24px; 
+        .balance-amount {
+            font-size: 24px;
         }
 
-        .balance-limit { 
-            font-size: 14px; 
-            color: var(--secondary-text-color); 
+        .balance-limit {
+            font-size: 14px;
+            color: var(--secondary-text-color);
         }
 
         .earn-button {
-            display: inline-block; 
-            text-decoration: none; 
-            width: 80%; 
-            margin-top: 25px; 
-            padding: 15px; 
+            display: inline-block;
+            text-decoration: none;
+            width: 80%;
+            margin-top: 25px;
+            padding: 15px;
             border-radius: 15px;
-            background-color: var(--accent-color); 
-            color: var(--white-color); 
-            font-weight: 700; 
-            font-size: 18px; 
+            background-color: var(--accent-color);
+            color: var(--white-color);
+            font-weight: 700;
+            font-size: 18px;
             transition: all 0.3s ease;
         }
 
-        .earn-button:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4); 
+        .earn-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
         }
 
-        .section-title { 
-            text-align: center; 
-            font-size: 20px; 
-            font-weight: 700; 
-            margin-bottom: 20px; 
-            color: var(--primary-text-color); 
+        .section-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-text-color);
         }
 
-        .referral-link-container { 
-            display: flex; 
-            gap: 10px; 
-            margin-top: 15px; 
+        .referral-link-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
         }
 
-        .referral-link-input { 
-            flex-grow: 1; 
-            padding: 10px 15px; 
-            font-size: 14px; 
-            border: 1px solid var(--border-color); 
-            border-radius: 12px; 
-            background-color: #f9f9f9; 
+        .referral-link-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background-color: #f9f9f9;
         }
 
-        .copy-btn { 
-            background-color: var(--secondary-text-color); 
-            color: var(--white-color); 
-            border: none; 
-            border-radius: 12px; 
-            padding: 0 15px; 
-            cursor: pointer; 
+        .copy-btn {
+            background-color: var(--secondary-text-color);
+            color: var(--white-color);
+            border: none;
+            border-radius: 12px;
+            padding: 0 15px;
+            cursor: pointer;
         }
 
-        .referral-desc { 
-            font-size: 14px; 
-            color: var(--secondary-text-color); 
-            line-height: 1.6; 
-            margin-top: 20px; 
-            text-align: center; 
+        .referral-desc {
+            font-size: 14px;
+            color: var(--secondary-text-color);
+            line-height: 1.6;
+            margin-top: 20px;
+            text-align: center;
         }
 
-        .empty-list-message { 
-            text-align: center; 
-            color: var(--secondary-text-color); 
-            padding: 20px 0; 
-            font-style: italic; 
+        .empty-list-message {
+            text-align: center;
+            color: var(--secondary-text-color);
+            padding: 20px 0;
+            font-style: italic;
         }
     </style>
 </head>
@@ -641,6 +678,8 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blockadblock/3.2.1/blockadblock.min.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const WITHDRAWAL_LIMIT = 20.00;
@@ -658,35 +697,32 @@
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             
-            const profileIcon = document.getElementById('profile-icon'),
-                  profilePopup = document.getElementById('profile-popup'),
-                  popupProfileImg = document.getElementById('popup-profile-img'),
-                  userNameElement = document.querySelector('.user-name'),
-                  userEmailElement = document.querySelector('.user-email'),
-                  logoutButton = document.querySelector('.logout-btn'),
-                  balanceAmountText = document.getElementById('balance-amount-text'),
-                  popupBalanceAmount = document.getElementById('popup-balance-amount'),
-                  progressBar = document.getElementById('progress-bar'),
-                  changePhotoButton = document.getElementById('change-photo-btn'),
-                  imagePickerPopup = document.getElementById('image-picker-popup'),
-                  imageChoices = document.querySelectorAll('.image-choice'),
-                  popupWithdrawButton = document.getElementById('popup-withdraw-btn'),
-                  goalModal = document.getElementById('goal-modal'),
-                  goalModalCloseButton = document.getElementById('goal-modal-close'),
-                  editNameButton = document.getElementById('edit-name-btn'),
-                  referralLinkInput = document.getElementById('referral-link-input'),
-                  copyButton = document.getElementById('copy-btn');
+            const adblockModal = document.getElementById('adblock-modal-overlay');
+            const profileIcon = document.getElementById('profile-icon'), profilePopup = document.getElementById('profile-popup'), popupProfileImg = document.getElementById('popup-profile-img'),
+                  userNameElement = document.querySelector('.user-name'), userEmailElement = document.querySelector('.user-email'), logoutButton = document.querySelector('.logout-btn'),
+                  balanceAmountText = document.getElementById('balance-amount-text'), popupBalanceAmount = document.getElementById('popup-balance-amount'),
+                  progressBar = document.getElementById('progress-bar'), changePhotoButton = document.getElementById('change-photo-btn'), imagePickerPopup = document.getElementById('image-picker-popup'),
+                  imageChoices = document.querySelectorAll('.image-choice'), popupWithdrawButton = document.getElementById('popup-withdraw-btn'),
+                  goalModal = document.getElementById('goal-modal'), goalModalCloseButton = document.getElementById('goal-modal-close'),
+                  editNameButton = document.getElementById('edit-name-btn'), referralLinkInput = document.getElementById('referral-link-input'), copyButton = document.getElementById('copy-btn');
+
+            function adBlockDetected() {
+                adblockModal.style.display = 'flex';
+            }
+            if(typeof blockAdBlock === 'undefined') {
+                adBlockDetected();
+            } else {
+                blockAdBlock.onDetected(adBlockDetected);
+            }
 
             auth.onAuthStateChanged(user => {
                 if (user) {
                     loadProfileImage();
                     userNameElement.textContent = user.displayName;
                     userEmailElement.textContent = user.email;
-                    referralLinkInput.value = `https://beebeast.ct.ws/?ref=${user.uid}`;
+                    referralLinkInput.value = `https://beebeast.ct.ws/?ref=${user.uid.slice(0, 8)}`;
                     updateBalanceUI();
-                } else {
-                    window.location.replace('index.html');
-                }
+                } else { window.location.replace('index.html'); }
             });
 
             function updateBalanceUI() {
@@ -738,28 +774,10 @@
                 });
             });
 
-            profileIcon.addEventListener('click', e => {
-                e.stopPropagation();
-                profilePopup.classList.toggle('show');
-                imagePickerPopup.style.display = 'none';
-            });
-
-            logoutButton.addEventListener('click', () => {
-                localStorage.clear();
-                auth.signOut();
-            });
-
-            document.addEventListener('click', e => {
-                if (!profilePopup.contains(e.target) && !profileIcon.contains(e.target)) {
-                    profilePopup.classList.remove('show');
-                }
-            });
-            
-            changePhotoButton.addEventListener('click', e => {
-                e.stopPropagation();
-                imagePickerPopup.style.display = imagePickerPopup.style.display === 'block' ? 'none' : 'block';
-            });
-
+            profileIcon.addEventListener('click', e => { e.stopPropagation(); profilePopup.classList.toggle('show'); imagePickerPopup.style.display = 'none'; });
+            logoutButton.addEventListener('click', () => { localStorage.clear(); auth.signOut(); });
+            document.addEventListener('click', e => { if (!profilePopup.contains(e.target) && !profileIcon.contains(e.target)) { profilePopup.classList.remove('show'); } });
+            changePhotoButton.addEventListener('click', e => { e.stopPropagation(); imagePickerPopup.style.display = imagePickerPopup.style.display === 'block' ? 'none' : 'block'; });
             imageChoices.forEach(choice => {
                 const imgSrc = choice.dataset.imgSrc;
                 choice.style.backgroundImage = `url(${imgSrc})`;
@@ -769,7 +787,6 @@
                     imagePickerPopup.style.display = 'none';
                 });
             });
-            
             popupWithdrawButton.addEventListener('click', () => {
                 if (popupWithdrawButton.disabled) {
                     goalModal.classList.add('show');
@@ -777,7 +794,6 @@
                     alert("Withdrawal Process Started!");
                 }
             });
-
             goalModalCloseButton.addEventListener('click', () => {
                 goalModal.classList.add('dismiss');
                 setTimeout(() => {

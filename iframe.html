@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task in Progress... - BeeBeast</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #f4f6f8;
+            --card-color: #ffffff;
+            --primary-text-color: #000000;
+            --secondary-text-color: #5f6368;
+            --accent-color: #ffa500;
+            --white-color: #ffffff;
+            --success-color: #4CAF50;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Comfortaa', sans-serif;
+        }
+
+        .task-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+
+        .top-bar {
+            background-color: var(--card-color);
+            padding: 10px 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .timer-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin: 5px 0;
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: var(--secondary-text-color);
+            margin: 0;
+        }
+
+        .back-button {
+            display: none;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 15px;
+            background-color: var(--success-color);
+            color: var(--white-color);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .iframe-wrapper {
+            flex-grow: 1;
+            border: none;
+            overflow: auto;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="task-container">
+        <div class="top-bar">
+            <p id="status-text" class="status-text">Please wait for the timer to finish...</p>
+            <h2 id="timer" class="timer-text"></h2>
+            <button id="back-button" class="back-button">Go Back & Claim Reward</button>
+        </div>
+        <div class="iframe-wrapper">
+            <iframe id="task-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timerEl = document.getElementById('timer');
+            const statusTextEl = document.getElementById('status-text');
+            const backButtonEl = document.getElementById('back-button');
+            const taskIframe = document.getElementById('task-iframe');
+
+            const params = new URLSearchParams(window.location.search);
+            const taskId = parseInt(params.get('taskId'));
+            const duration = parseInt(params.get('duration'));
+            const reward = parseFloat(params.get('reward'));
+            const link = decodeURIComponent(params.get('link'));
+
+            if (!taskId || !duration || !reward || !link) {
+                statusTextEl.textContent = 'Error: Task details are missing.';
+                return;
+            }
+
+            taskIframe.src = link;
+
+            let timeLeft = duration;
+            timerEl.textContent = `${timeLeft} seconds remaining`;
+
+            const countdown = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = `${timeLeft} seconds remaining`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    timerEl.textContent = 'Task Completed!';
+                    statusTextEl.textContent = 'Your reward has been added to your balance.';
+                    backButtonEl.style.display = 'inline-block';
+
+                    let currentBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+                    currentBalance += reward;
+                    localStorage.setItem('userBalance', currentBalance.toFixed(4));
+                    
+                    let completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
+                    if (!completedTasks.includes(taskId)) {
+                        completedTasks.push(taskId);
+                    }
+                    localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+                }
+            }, 1000);
+
+            backButtonEl.addEventListener('click', () => {
+                window.location.href = 'earn.html';
+            });
+        });
+    </script>
+</body>
+</html>

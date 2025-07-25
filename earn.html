@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Earn - BeeBeast</title>
     
-    <!-- Google Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
@@ -165,6 +164,16 @@
         .task-card.completed .task-button {
             background-color: var(--success-color);
         }
+        
+        .timer-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .timer-text {
+            font-size: 22px;
+            font-weight: 700;
+        }
 
         .toast {
             visibility: hidden;
@@ -202,6 +211,10 @@
     
     <main class="main-content">
         <h1 class="page-title">Complete Tasks & Earn</h1>
+        <div class="timer-container" id="timer-container" style="display: none;">
+            <p>New tasks will be available in:</p>
+            <h2 id="refresh-timer" class="timer-text">05:00</h2>
+        </div>
         <div id="task-grid" class="task-grid"></div>
     </main>
     
@@ -213,7 +226,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- Firebase Configuration (CRITICAL FIX) ---
             const firebaseConfig = {
                 apiKey: "AIzaSyC6UH9ItgAF006kc95OQgoTvpD8yGqHmhs",
                 authDomain: "auth-64fa4.firebaseapp.com",
@@ -225,116 +237,109 @@
                 measurementId: "G-C8T3EL92VR"
             };
 
-            // --- Initialize Firebase ---
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             
-            // --- Element Selection ---
             const taskGrid = document.getElementById('task-grid');
-            const toast = document.getElementById('toast-notification');
+            const timerContainer = document.getElementById('timer-container');
+            const refreshTimerEl = document.getElementById('refresh-timer');
+            const REFRESH_INTERVAL = 5 * 60 * 1000;
 
-            // --- Authentication Check ---
             auth.onAuthStateChanged(user => {
                 if (!user) {
                     window.location.replace('index.html');
                 }
             });
 
-            // --- Task Data with your Adsterra Direct Links ---
-            const tasks = [
-                { title: 'Explore Partner Site', duration: 15, reward: 0.0012, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
-                { title: 'View Special Offer', duration: 20, reward: 0.0025, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' },
-                { title: 'Read Sponsored Article', duration: 25, reward: 0.0030, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
-                { title: 'Discover New Content', duration: 15, reward: 0.0014, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' },
-                { title: 'Check out this Service', duration: 10, reward: 0.0008, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
-                { title: 'Learn More Here', duration: 18, reward: 0.0018, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' }
+            const allTasks = [
+                { id: 1, title: 'Explore Partner Site', duration: 15, reward: 0.0012, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
+                { id: 2, title: 'View Special Offer', duration: 20, reward: 0.0025, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' },
+                { id: 3, title: 'Read Sponsored Article', duration: 25, reward: 0.0030, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
+                { id: 4, title: 'Discover New Content', duration: 15, reward: 0.0014, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' },
+                { id: 5, title: 'Check out this Service', duration: 10, reward: 0.0008, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
+                { id: 6, title: 'Learn More Here', duration: 18, reward: 0.0018, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' }
             ];
 
-            // --- Functions ---
+            function checkTasksStatus() {
+                const completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
+                if (completedTasks.length >= allTasks.length) {
+                    showRefreshTimer();
+                } else {
+                    renderTaskCards();
+                }
+            }
             
-            function showToast(message, isError = false) {
-                toast.textContent = message;
-                toast.className = isError ? 'toast show error' : 'toast show';
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            }
-
-            function startTask(taskCard, button, duration, reward, link) {
-                button.disabled = true;
-                let timeLeft = duration;
-                button.innerHTML = `Verifying... <span>${timeLeft}s</span>`;
-                taskCard.classList.add('pending');
-
-                window.open(link, '_blank');
-                
-                let timeElapsed = false;
-                
-                const countdown = setInterval(() => {
-                    timeLeft--;
-                    button.innerHTML = `Verifying... <span>${timeLeft}s</span>`;
-                    if (timeLeft <= 0) {
-                        clearInterval(countdown);
-                        timeElapsed = true;
-                    }
-                }, 1000);
-
-                const verificationListener = () => {
-                    window.removeEventListener('focus', verificationListener);
-                    clearInterval(countdown);
-
-                    if (timeElapsed) {
-                        let currentBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
-                        currentBalance += reward;
-                        localStorage.setItem('userBalance', currentBalance.toFixed(4));
-                        
-                        taskCard.classList.remove('pending');
-                        taskCard.classList.add('completed');
-                        button.innerHTML = '<i class="material-icons-round">check_circle</i> Task Completed';
-                        taskCard.querySelector('.card-icon').textContent = 'check_circle';
-                        
-                        showToast(`+ $${reward.toFixed(4)} Reward Added!`);
-                    } else {
-                        showToast("Verification failed. Please wait for the full duration.", true);
-                        button.disabled = false;
-                        button.innerHTML = 'Start Task';
-                        taskCard.classList.remove('pending');
-                    }
-                };
-                
-                window.addEventListener('focus', verificationListener);
-            }
-
             function renderTaskCards() {
                 taskGrid.innerHTML = '';
+                timerContainer.style.display = 'none';
+                const completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
 
-                tasks.forEach(task => {
+                allTasks.forEach(task => {
+                    const isCompleted = completedTasks.includes(task.id);
                     const taskCard = document.createElement('div');
-                    taskCard.className = 'task-card';
+                    taskCard.className = isCompleted ? 'task-card completed' : 'task-card';
+
                     taskCard.innerHTML = `
-                        <i class="material-icons-round card-icon">public</i>
+                        <i class="material-icons-round card-icon">${isCompleted ? 'check_circle' : 'public'}</i>
                         <h3 class="task-title">${task.title}</h3>
-                        <p class="task-description">Click to start, visit the page for <strong>${task.duration} seconds</strong>, and return to claim your reward.</p>
+                        <p class="task-description">Complete a simple task for <strong>${task.duration} seconds</strong> to get your reward.</p>
                         <p class="task-reward">$${task.reward.toFixed(4)}</p>
-                        <button class="task-button">Start Task</button>
+                        <button class="task-button" ${isCompleted ? 'disabled' : ''}>${isCompleted ? 'Task Completed' : 'Start Task'}</button>
                     `;
-
-                    const taskButton = taskCard.querySelector('.task-button');
-                    taskButton.addEventListener('click', () => {
-                        startTask(taskCard, taskButton, task.duration, task.reward, task.link);
-                    });
-
+                    if (!isCompleted) {
+                        taskCard.querySelector('.task-button').addEventListener('click', () => {
+                            window.location.href = `iframe.html?taskId=${task.id}&duration=${task.duration}&reward=${task.reward}&link=${encodeURIComponent(task.link)}`;
+                        });
+                    }
                     taskGrid.appendChild(taskCard);
                 });
             }
 
-            // --- Initial Setup ---
-            renderTaskCards();
+            function showRefreshTimer() {
+                taskGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text-color);">You have completed all available tasks for now. Please wait for them to refresh.</p>';
+                timerContainer.style.display = 'block';
+                
+                let lastRefreshTime = parseInt(localStorage.getItem('lastRefreshTime')) || 0;
+                if (lastRefreshTime === 0) {
+                    lastRefreshTime = Date.now();
+                    localStorage.setItem('lastRefreshTime', lastRefreshTime.toString());
+                }
+
+                let timePassed = Date.now() - lastRefreshTime;
+
+                if (timePassed >= REFRESH_INTERVAL) {
+                    resetTasks();
+                    return;
+                }
+
+                let remainingTime = REFRESH_INTERVAL - timePassed;
+                const interval = setInterval(() => {
+                    remainingTime -= 1000;
+                    if (remainingTime <= 0) {
+                        clearInterval(interval);
+                        resetTasks();
+                    } else {
+                        const minutes = Math.floor((remainingTime / 1000) / 60);
+                        const seconds = Math.floor((remainingTime / 1000) % 60);
+                        refreshTimerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                }, 1000);
+            }
+
+            function resetTasks() {
+                localStorage.removeItem('completedTasks');
+                localStorage.setItem('lastRefreshTime', Date.now().toString());
+                const refreshButton = document.createElement('button');
+                refreshButton.className = 'task-button';
+                refreshButton.textContent = 'Refresh Tasks';
+                refreshButton.onclick = () => window.location.reload();
+                taskGrid.innerHTML = '';
+                timerContainer.style.display = 'none';
+                taskGrid.appendChild(refreshButton);
+            }
+
+            checkTasksStatus();
         });
     </script>
-    
-    <!-- Adsterra Social Bar Ad Code -->
-    <script type='text/javascript' src='//pl27259770.profitableratecpm.com/a4/29/7a/a4297aecf0735a486971d080329154ba.js'></script>
-    
 </body>
 </html>
