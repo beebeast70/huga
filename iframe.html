@@ -9,98 +9,43 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* 
-        ========================================
-        CSS STYLES (Properly Formatted)
-        ========================================
-        */
+        /* All CSS remains the same */
         :root {
-            --background-color: #f4f6f8;
-            --card-color: #ffffff;
-            --primary-text-color: #000000;
-            --secondary-text-color: #5f6368;
-            --accent-color: #ffa500;
-            --white-color: #ffffff;
+            --background-color: #f4f6f8; --card-color: #ffffff; --primary-text-color: #000000;
+            --secondary-text-color: #5f6368; --accent-color: #ffa500; --white-color: #ffffff;
             --success-color: #4CAF50;
         }
-
-        html, 
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Comfortaa', sans-serif;
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Comfortaa', sans-serif;
         }
-
-        .task-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-        }
-
+        .task-container { display: flex; flex-direction: column; width: 100%; height: 100%; }
         .top-bar {
-            background-color: var(--card-color);
-            padding: 10px 20px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 10;
+            background-color: var(--card-color); padding: 10px 20px; text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 10;
         }
-
-        .timer-text {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin: 5px 0;
-        }
-
-        .status-text {
-            font-size: 14px;
-            color: var(--secondary-text-color);
-            margin: 0;
-        }
-
+        .timer-text { font-size: 20px; font-weight: 700; color: var(--accent-color); margin: 5px 0; }
+        .status-text { font-size: 14px; color: var(--secondary-text-color); margin: 0; }
         .back-button {
-            display: none;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 15px;
-            background-color: var(--success-color);
-            color: var(--white-color);
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
+            display: none; padding: 12px 25px; border: none; border-radius: 15px;
+            background-color: var(--success-color); color: var(--white-color); font-size: 16px;
+            font-weight: 700; cursor: pointer; margin-top: 10px;
         }
-
-        .iframe-wrapper {
-            flex-grow: 1;
-            border: none;
-            overflow: auto;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        .iframe-wrapper { flex-grow: 1; border: none; overflow: auto; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
     <div class="task-container">
         <div class="top-bar">
             <p id="status-text" class="status-text">Please wait for the page to load...</p>
-            <h2 id="timer" class="timer-text">Loading...</h2>
-            <button id="back-button" class="back-button">Go Back to Earn Page</button>
+            <h2 id="timer" class="timer-text">Loading Ad...</h2>
+            <button id="back-button" class="back-button">Go Back</button>
         </div>
         <div class="iframe-wrapper">
             <iframe id="task-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
         </div>
     </div>
-
-    <!-- Firebase SDKs -->
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -108,17 +53,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            const firebaseConfig = {
-                apiKey: "AIzaSyC6UH9ItgAF006kc95OQgoTvpD8yGqHmhs",
-                authDomain: "auth-64fa4.firebaseapp.com",
-                databaseURL: "https://auth-64fa4-default-rtdb.firebaseio.com",
-                projectId: "auth-64fa4",
-                storageBucket: "auth-64fa4.firebasestorage.app",
-                messagingSenderId: "859507228555",
-                appId: "1:859507228555:web:f4d4a39a9aa44e0d1d798e",
-                measurementId: "G-C8T3EL92VR"
-            };
-
+            const firebaseConfig = { /* Your firebase config */ };
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.database();
@@ -128,7 +63,6 @@
             const backButtonEl = document.getElementById('back-button');
             const taskIframe = document.getElementById('task-iframe');
 
-            // Get task details from URL parameters
             const params = new URLSearchParams(window.location.search);
             const taskId = parseInt(params.get('taskId'));
             const reward = parseFloat(params.get('reward'));
@@ -136,19 +70,23 @@
             const DURATION = 40;
 
             if (!taskId || !reward || !link) {
-                statusTextEl.textContent = 'Error: Task details are missing. Please go back.';
+                statusTextEl.textContent = 'Error: Task details are missing.';
                 return;
             }
-            
-            let countdown;
 
-            // This function starts the timer
+            // This flag will prevent the timer from starting multiple times
+            let timerStarted = false;
+
             function startTimer() {
+                // Ensure the timer only starts once
+                if (timerStarted) return;
+                timerStarted = true;
+
                 statusTextEl.textContent = 'Please wait for the timer to finish...';
                 let timeLeft = DURATION;
                 timerEl.textContent = `${timeLeft} seconds remaining`;
 
-                countdown = setInterval(() => {
+                const countdown = setInterval(() => {
                     timeLeft--;
                     timerEl.textContent = `${timeLeft} seconds remaining`;
 
@@ -156,7 +94,7 @@
                         clearInterval(countdown);
                         
                         timerEl.textContent = 'Task Completed!';
-                        statusTextEl.textContent = 'Your reward has been added to your balance.';
+                        statusTextEl.textContent = 'Your reward has been added. You can now go back.';
                         backButtonEl.style.display = 'inline-block';
                         
                         const user = auth.currentUser;
@@ -164,16 +102,13 @@
                             const userRef = db.ref(`users/${user.uid}`);
                             userRef.transaction(userData => {
                                 if (userData) {
-                                    // Initialize data if it doesn't exist
                                     if (!userData.balance) userData.balance = 0;
                                     if (!userData.tasks) userData.tasks = { completed: [] };
                                     if (!userData.tasks.completed) userData.tasks.completed = [];
                                     
-                                    // Update balance
-                                    userData.balance += reward;
-                                    
-                                    // Update completed tasks if not already completed
+                                    // Add reward and task completion only if it's not already completed
                                     if (!userData.tasks.completed.includes(taskId)) {
+                                        userData.balance += reward;
                                         userData.tasks.completed.push(taskId);
                                     }
                                 }
@@ -184,16 +119,16 @@
                 }, 1000);
             }
 
-            // The 'onload' event will fire when the iframe content (the ad) has fully loaded
-            taskIframe.onload = () => {
-                startTimer();
-            };
+            // Set a small delay before starting the timer to allow iframe to begin loading.
+            // This is more reliable than iframe.onload for cross-origin content.
+            setTimeout(startTimer, 1000); // Start timer after 1 second
 
-            // Set the iframe src to start loading the ad
+            // Load ad link into iframe
             taskIframe.src = link;
 
             backButtonEl.addEventListener('click', () => {
-                window.location.href = 'earn.html';
+                // Go back to the earn page with a success status
+                window.location.href = 'earn.html?task_completed=true';
             });
         });
     </script>
