@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks - BeeBeast</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
+    <style>
+        /* 
+        ========================================
+        CSS STYLES (Properly Formatted)
+        ========================================
+        */
+
+        :root {
+            --background-color: #f4f6f8;
+            --card-color: #ffffff;
+            --primary-text-color: #000000;
+            --secondary-text-color: #5f6368;
+            --accent-color: #ffa500;
+            --white-color: #ffffff;
+            --border-color: #e0e0e0;
+            --success-color: #4CAF50;
+            --error-color: #F44336;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Comfortaa', sans-serif;
+            margin: 0;
+            padding: 85px 20px 20px 20px;
+        }
+
+        .header {
+            background-color: var(--card-color);
+            padding: 0 20px;
+            height: 65px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+        
+        .logo {
+            font-family: 'Bruno Ace SC', sans-serif;
+            font-size: 24px;
+        }
+
+        .logo .beast {
+            color: var(--accent-color);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--primary-text-color);
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            justify-items: center;
+        }
+
+        .task-card,
+        .ad-card {
+            background-color: var(--card-color);
+            border-radius: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .task-card.completed {
+            background-color: #f1f8e9;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.1);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            color: var(--accent-color);
+        }
+        
+        .task-card.completed .card-icon {
+            color: var(--success-color);
+        }
+
+        .task-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-text-color);
+            margin: 15px 0 10px 0;
+        }
+
+        .task-description {
+            font-size: 14px;
+            color: var(--secondary-text-color);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .task-reward {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--success-color);
+            margin-bottom: 25px;
+        }
+
+        .task-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background-color: var(--accent-color);
+            color: var(--white-color);
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .task-button:hover {
+            background-color: #e69500;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
+        }
+        
+        .task-button:disabled {
+            background-color: #cccccc;
+            color: #616161;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .task-card.completed .task-button {
+            background-color: var(--success-color);
+        }
+        
+        .timer-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .timer-container p {
+            font-size: 16px;
+            color: var(--secondary-text-color);
+        }
+
+        .timer-text {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--success-color);
+            color: var(--white-color);
+            text-align: center;
+            border-radius: 15px;
+            padding: 16px;
+            position: fixed;
+            z-index: 2000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.5s, bottom 0.5s;
+        }
+        
+        .toast.error {
+            background-color: var(--error-color);
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
+        .ad-card p {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--secondary-text-color);
+            margin: 0 0 15px 0;
+        }
+
+        .ad-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    
+    <header class="header">
+        <div class="logo">Bee<span class="beast">Beast</span></div>
+    </header>
+    
+    <main class="main-content">
+        <h1 class="page-title">Complete Tasks & Earn</h1>
+        
+        <div class="timer-container" id="timer-container" style="display: none;">
+            <p>New tasks will be available in:</p>
+            <h2 id="refresh-timer" class="timer-text">05:00</h2>
+        </div>
+
+        <div id="task-grid" class="task-grid">
+            <p>Loading tasks...</p>
+        </div>
+    </main>
+    
+    <div id="toast-notification" class="toast"></div>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const firebaseConfig = {
+                apiKey: "AIzaSyC6UH9ItgAF006kc95OQgoTvpD8yGqHmhs",
+                authDomain: "auth-64fa4.firebaseapp.com",
+                databaseURL: "https://auth-64fa4-default-rtdb.firebaseio.com",
+                projectId: "auth-64fa4",
+                storageBucket: "auth-64fa4.firebasestorage.app",
+                messagingSenderId: "859507228555",
+                appId: "1:859507228555:web:f4d4a39a9aa44e0d1d798e",
+                measurementId: "G-C8T3EL92VR"
+            };
+
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.database();
+            
+            const taskGrid = document.getElementById('task-grid');
+            const timerContainer = document.getElementById('timer-container');
+            const refreshTimerEl = document.getElementById('refresh-timer');
+            const toast = document.getElementById('toast-notification');
+            const REFRESH_INTERVAL = 5 * 60 * 1000;
+            let currentUser = null;
+
+            const allTasks = [
+                { id: 1, title: 'Explore Partner Site', duration: 15, reward: 0.0012, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
+                { id: 2, title: 'View Special Offer', duration: 20, reward: 0.0025, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' },
+                { id: 3, title: 'Read Sponsored Article', duration: 25, reward: 0.0030, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
+                { id: 4, title: 'Discover New Content', duration: 15, reward: 0.0014, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' },
+                { id: 5, title: 'Check out this Service', duration: 10, reward: 0.0008, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
+                { id: 6, title: 'Learn More Here', duration: 18, reward: 0.0018, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' }
+            ];
+
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    checkUrlForStatus();
+                    checkTasksStatus();
+                } else {
+                    window.location.replace('index.html');
+                }
+            });
+
+            function showToast(message, isError = false) {
+                toast.textContent = message;
+                toast.className = isError ? 'toast show error' : 'toast show';
+                setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            }
+            
+            function checkUrlForStatus() {
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('task_completed') === 'true') {
+                    showToast("Task successfully verified and reward added!");
+                }
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            function checkTasksStatus() {
+                if (!currentUser) return;
+                const userTasksRef = db.ref(`users/${currentUser.uid}/tasks`);
+                
+                userTasksRef.once('value').then(snapshot => {
+                    const userData = snapshot.val() || { completed: [], lastRefreshTime: 0 };
+                    const completedTasks = userData.completed || [];
+                    
+                    if (completedTasks.length >= allTasks.length) {
+                        showRefreshTimer(userData.lastRefreshTime);
+                    } else {
+                        renderTaskCards(completedTasks);
+                    }
+                });
+            }
+            
+            function renderTaskCards(completedTasks = []) {
+                taskGrid.innerHTML = '';
+                timerContainer.style.display = 'none';
+
+                allTasks.forEach(task => {
+                    const isCompleted = completedTasks.includes(task.id);
+                    const taskCard = document.createElement('div');
+                    taskCard.className = isCompleted ? 'task-card completed' : 'task-card';
+                    
+                    taskCard.innerHTML = `
+                        <i class="material-icons-round card-icon">${isCompleted ? 'check_circle' : 'public'}</i>
+                        <h3 class="task-title">${task.title}</h3>
+                        <p class="task-description">Complete a simple task for <strong>40 seconds</strong> to get your reward.</p>
+                        <p class="task-reward">$${task.reward.toFixed(4)}</p>
+                        <button class="task-button" ${isCompleted ? 'disabled' : ''}>${isCompleted ? 'Task Completed' : 'Start Task'}</button>
+                    `;
+                    
+                    if (!isCompleted) {
+                        taskCard.querySelector('.task-button').addEventListener('click', () => {
+                            window.location.href = `iframe.html?taskId=${task.id}&reward=${task.reward}&link=${encodeURIComponent(task.link)}`;
+                        });
+                    }
+                    taskGrid.appendChild(taskCard);
+                    
+                    // Add a native banner after every 3 task cards
+                    if( (allTasks.indexOf(task) + 1) % 3 === 0) {
+                        const adCard = document.createElement('div');
+                        adCard.className = 'ad-card';
+                        adCard.innerHTML = `
+                            <p>Sponsored Content</p>
+                            <div class="ad-container">
+                                <script async="async" data-cfasync="false" src="//pl27259780.profitableratecpm.com/0b68a123d76b017fd3c9e321cd962227/invoke.js"><\/script>
+                                <div id="container-0b68a123d76b017fd3c9e321cd962227"></div>
+                            </div>
+                        `;
+                        taskGrid.appendChild(adCard);
+                    }
+                });
+            }
+
+            function showRefreshTimer(lastRefreshTime = 0) {
+                taskGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text-color);">You have completed all available tasks. Please wait for them to refresh.</p>';
+                timerContainer.style.display = 'block';
+                
+                if (lastRefreshTime === 0) {
+                    lastRefreshTime = Date.now();
+                    db.ref(`users/${currentUser.uid}/tasks/lastRefreshTime`).set(lastRefreshTime);
+                }
+
+                const timePassed = Date.now() - lastRefreshTime;
+
+                if (timePassed >= REFRESH_INTERVAL) {
+                    resetTasks();
+                    return;
+                }
+
+                let remainingTime = REFRESH_INTERVAL - timePassed;
+                const interval = setInterval(() => {
+                    remainingTime -= 1000;
+                    if (remainingTime <= 0) {
+                        clearInterval(interval);
+                        resetTasks();
+                    } else {
+                        const minutes = Math.floor((remainingTime / 1000) / 60);
+                        const seconds = Math.floor((remainingTime / 1000) % 60);
+                        refreshTimerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                }, 1000);
+            }
+
+            function resetTasks() {
+                if (!currentUser) return;
+                const userRef = db.ref(`users/${currentUser.uid}/tasks`);
+                userRef.set({
+                    completed: [],
+                    lastRefreshTime: Date.now()
+                }).then(() => {
+                    const refreshButton = document.createElement('button');
+                    refreshButton.className = 'task-button';
+                    refreshButton.textContent = 'Refresh Tasks';
+                    refreshButton.onclick = () => window.location.reload();
+                    taskGrid.innerHTML = '';
+                    timerContainer.style.display = 'none';
+                    taskGrid.appendChild(refreshButton);
+                });
+            }
+        });
+    </script>
+    
+    <!-- Adsterra Social Bar Ad Code -->
+    <script type='text/javascript' src='//pl27259770.profitableratecpm.com/a4/29/7a/a4297aecf0735a486971d080329154ba.js'></script>
+</body>
+</html>
