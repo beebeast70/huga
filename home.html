@@ -9,12 +9,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* 
-        ========================================
-        CSS STYLES (Properly Formatted)
-        ========================================
-        */
-
         :root {
             --background-color: #f4f6f8;
             --card-color: #ffffff;
@@ -72,7 +66,7 @@
             color: var(--secondary-text-color);
             line-height: 1.6;
         }
-
+        
         .header {
             background-color: var(--white-color);
             padding: 0 20px;
@@ -89,13 +83,12 @@
             box-sizing: border-box;
         }
 
-        .header-left,
-        .header-right {
+        .header-left, .header-right {
             flex: 1;
             display: flex;
             align-items: center;
         }
-        
+
         .header-right {
             justify-content: flex-end;
         }
@@ -583,27 +576,20 @@
 </head>
 <body>
 
+    <div id="adblock-modal-overlay" class="adblock-modal-overlay">
+        <div class="adblock-modal">
+            <i class="material-icons-round adblock-modal-icon">report_problem</i>
+            <h2>AdBlock Detected!</h2>
+            <p>To ensure all features of BeeBeast work correctly and to support our platform, please disable your AdBlocker and then refresh the page. Thank you!</p>
+        </div>
+    </div>
+    
     <svg width="0" height="0" style="position:absolute;">
-        <defs>
-            <filter id="wave-filter">
-                <feTurbulence baseFrequency="0.02 0.05" numOctaves="1" seed="2" type="fractalNoise">
-                    <animate attributeName="baseFrequency" dur="2s" keyTimes="0;0.5;1" values="0.02 0.05;0.03 0.08;0.02 0.05" repeatCount="indefinite" />
-                </feTurbulence>
-                <feDisplacementMap in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-        </defs>
+        <defs><filter id="wave-filter"><feTurbulence baseFrequency="0.02 0.05" numOctaves="1" seed="2" type="fractalNoise"><animate attributeName="baseFrequency" dur="2s" keyTimes="0;0.5;1" values="0.02 0.05;0.03 0.08;0.02 0.05" repeatCount="indefinite" /></feTurbulence><feDisplacementMap in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter></defs>
     </svg>
-
     <header class="header">
-        <div class="header-left"></div>
-        <div class="header-center">
-            <div class="logo">Bee<span class="beast">Beast</span></div>
-        </div>
-        <div class="header-right">
-            <div id="profile-icon" class="profile-icon"></div>
-        </div>
+        <div class="header-left"></div><div class="header-center"><div class="logo">Bee<span class="beast">Beast</span></div></div><div class="header-right"><div id="profile-icon" class="profile-icon"></div></div>
     </header>
-
     <div id="profile-popup" class="profile-popup">
         <div class="popup-user-info">
             <img id="popup-profile-img" src="" alt="User Avatar">
@@ -611,14 +597,9 @@
                 <div class="user-name">Loading...</div>
                 <div class="user-email">Loading...</div>
             </div>
-            <button id="edit-name-btn" class="edit-name-btn">
-                <i class="material-icons-round">edit</i>
-            </button>
+            <button id="edit-name-btn" class="edit-name-btn"><i class="material-icons-round">edit</i></button>
         </div>
-        <div class="popup-balance-section">
-            <div class="label">Your Balance</div>
-            <div id="popup-balance-amount" class="amount">$0.00</div>
-        </div>
+        <div class="popup-balance-section"><div class="label">Your Balance</div><div id="popup-balance-amount" class="amount">$0.00</div></div>
         <button id="change-photo-btn" class="change-photo-btn">Change Profile Photo</button>
         <div id="image-picker-popup" class="image-picker-popup">
             <div class="image-picker-grid">
@@ -627,26 +608,18 @@
                 <div class="image-choice" data-img-src="https://i.ibb.co/1GcY6gZd/209fa4e7acfacee55a08887b0c123a94.jpg"></div>
             </div>
         </div>
-        <div class="popup-actions">
-             <button id="popup-withdraw-btn" class="popup-btn popup-withdraw-btn" disabled>Withdraw</button>
-             <a href="deposit.html" class="popup-btn popup-deposit-btn">Deposit</a>
-        </div>
+        <div class="popup-actions"><button id="popup-withdraw-btn" class="popup-btn popup-withdraw-btn" disabled>Withdraw</button><a href="deposit.html" class="popup-btn popup-deposit-btn">Deposit</a></div>
         <ul class="popup-menu-list">
             <li class="popup-menu-item"><a href="beebeast/0/terms.html"><i class="material-icons-round">description</i>Terms of Use</a></li>
             <li class="popup-menu-item"><a href="beebeast/0/privacy.html"><i class="material-icons-round">privacy_tip</i>Privacy Policy</a></li>
             <li class="popup-menu-item"><a href="beebeast/0/about.html"><i class="material-icons-round">info</i>About</a></li>
             <li class="popup-menu-item"><a href="beebeast/0/contact.html"><i class="material-icons-round">alternate_email</i>Contact</a></li>
         </ul>
-        <div class="logout-btn-wrapper">
-             <button class="logout-btn"><i class="material-icons-round">logout</i>Logout</button>
-        </div>
+        <div class="logout-btn-wrapper"><button class="logout-btn"><i class="material-icons-round">logout</i>Logout</button></div>
     </div>
-
     <main>
         <section class="hero-section">
-            <div class="wave-container">
-                <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill-opacity="1" class="shape-fill" d="M0,224L48,208C96,192,192,160,288,165.3C384,171,480,213,576,213.3C672,213,768,171,864,149.3C960,128,1056,128,1152,149.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
-            </div>
+            <div class="wave-container"><svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill-opacity="1" class="shape-fill" d="M0,224L48,208C96,192,192,160,288,165.3C384,171,480,213,576,213.3C672,213,768,171,864,149.3C960,128,1056,128,1152,149.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg></div>
         </section>
         <div class="main-content">
              <div class="balance-card content-card">
@@ -667,19 +640,12 @@
             </div>
         </div>
     </main>
-    <div id="goal-modal" class="goal-modal">
-        <div class="goal-modal-content">
-            <i class="material-icons-round goal-modal-icon">track_changes</i>
-            <h3 class="section-title">Goal Not Reached</h3>
-            <p>You need to collect at least $20.00 to enable the withdraw button. Keep earning!</p>
-            <button id="goal-modal-close" class="goal-modal-button">Okay</button>
-        </div>
-    </div>
+    <div id="goal-modal" class="goal-modal"><div class="goal-modal-content"><i class="material-icons-round goal-modal-icon">track_changes</i><h3 class="section-title">Goal Not Reached</h3><p>You need to collect at least $20.00 to enable the withdraw button. Keep earning!</p><button id="goal-modal-close" class="goal-modal-button">Okay</button></div></div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blockadblock/3.2.1/blockadblock.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const WITHDRAWAL_LIMIT = 20.00;
@@ -696,15 +662,29 @@
             };
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
+            const db = firebase.database();
             
             const adblockModal = document.getElementById('adblock-modal-overlay');
-            const profileIcon = document.getElementById('profile-icon'), profilePopup = document.getElementById('profile-popup'), popupProfileImg = document.getElementById('popup-profile-img'),
-                  userNameElement = document.querySelector('.user-name'), userEmailElement = document.querySelector('.user-email'), logoutButton = document.querySelector('.logout-btn'),
-                  balanceAmountText = document.getElementById('balance-amount-text'), popupBalanceAmount = document.getElementById('popup-balance-amount'),
-                  progressBar = document.getElementById('progress-bar'), changePhotoButton = document.getElementById('change-photo-btn'), imagePickerPopup = document.getElementById('image-picker-popup'),
-                  imageChoices = document.querySelectorAll('.image-choice'), popupWithdrawButton = document.getElementById('popup-withdraw-btn'),
-                  goalModal = document.getElementById('goal-modal'), goalModalCloseButton = document.getElementById('goal-modal-close'),
-                  editNameButton = document.getElementById('edit-name-btn'), referralLinkInput = document.getElementById('referral-link-input'), copyButton = document.getElementById('copy-btn');
+            const profileIcon = document.getElementById('profile-icon'),
+                  profilePopup = document.getElementById('profile-popup'),
+                  popupProfileImg = document.getElementById('popup-profile-img'),
+                  userNameElement = document.querySelector('.user-name'),
+                  userEmailElement = document.querySelector('.user-email'),
+                  logoutButton = document.querySelector('.logout-btn'),
+                  balanceAmountText = document.getElementById('balance-amount-text'),
+                  popupBalanceAmount = document.getElementById('popup-balance-amount'),
+                  progressBar = document.getElementById('progress-bar'),
+                  changePhotoButton = document.getElementById('change-photo-btn'),
+                  imagePickerPopup = document.getElementById('image-picker-popup'),
+                  imageChoices = document.querySelectorAll('.image-choice'),
+                  popupWithdrawButton = document.getElementById('popup-withdraw-btn'),
+                  goalModal = document.getElementById('goal-modal'),
+                  goalModalCloseButton = document.getElementById('goal-modal-close'),
+                  editNameButton = document.getElementById('edit-name-btn'),
+                  referralLinkInput = document.getElementById('referral-link-input'),
+                  copyButton = document.getElementById('copy-btn');
+            
+            let currentUser = null;
 
             function adBlockDetected() {
                 adblockModal.style.display = 'flex';
@@ -717,19 +697,28 @@
 
             auth.onAuthStateChanged(user => {
                 if (user) {
+                    currentUser = user;
                     loadProfileImage();
                     userNameElement.textContent = user.displayName;
                     userEmailElement.textContent = user.email;
                     referralLinkInput.value = `https://beebeast.ct.ws/?ref=${user.uid.slice(0, 8)}`;
-                    updateBalanceUI();
-                } else { window.location.replace('index.html'); }
+                    
+                    const userRef = db.ref(`users/${user.uid}`);
+                    userRef.on('value', (snapshot) => {
+                        const userData = snapshot.val();
+                        const currentBalance = userData && userData.balance ? userData.balance : 0;
+                        updateBalanceUI(currentBalance);
+                    });
+                } else {
+                    window.location.replace('index.html');
+                }
             });
 
-            function updateBalanceUI() {
-                let currentBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+            function updateBalanceUI(balance) {
+                const currentBalance = balance || 0;
                 const progressPercentage = Math.min((currentBalance / WITHDRAWAL_LIMIT) * 100, 100);
-                balanceAmountText.textContent = `$${currentBalance.toFixed(2)}`;
-                popupBalanceAmount.textContent = `$${currentBalance.toFixed(2)}`;
+                balanceAmountText.textContent = `$${currentBalance.toFixed(4)}`;
+                popupBalanceAmount.textContent = `$${currentBalance.toFixed(4)}`;
                 const circumference = 2 * Math.PI * 65;
                 progressBar.style.strokeDashoffset = circumference - (progressPercentage / 100) * circumference;
                 popupWithdrawButton.disabled = currentBalance < WITHDRAWAL_LIMIT;
@@ -741,7 +730,7 @@
             }
 
             function loadProfileImage() {
-                const savedImageUrl = localStorage.getItem('profileImageUrl');
+                const savedImageUrl = localStorage.getItem(`profileImageUrl_${currentUser.uid}`);
                 setProfileImage(savedImageUrl || DEFAULT_PROFILE_IMAGE);
             }
             
@@ -751,13 +740,13 @@
             }
 
             editNameButton.addEventListener('click', () => {
-                const user = auth.currentUser;
-                const currentName = user.displayName;
+                if (!currentUser) return;
+                const currentName = currentUser.displayName;
                 const newName = prompt("Enter your new name:", currentName);
 
                 if (newName && newName.trim() !== "" && newName.trim() !== currentName) {
                     const formattedName = capitalizeName(newName.trim());
-                    user.updateProfile({ displayName: formattedName })
+                    currentUser.updateProfile({ displayName: formattedName })
                         .then(() => {
                             userNameElement.textContent = formattedName;
                             alert("Name updated successfully!");
@@ -770,23 +759,45 @@
                 navigator.clipboard.writeText("https://beebeast.ct.ws").then(() => {
                     const original = copyButton.innerHTML;
                     copyButton.innerHTML = '<i class="material-icons-round">check</i>';
-                    setTimeout(() => { copyButton.innerHTML = original; }, 2000);
+                    setTimeout(() => {
+                        copyButton.innerHTML = original;
+                    }, 2000);
                 });
             });
 
-            profileIcon.addEventListener('click', e => { e.stopPropagation(); profilePopup.classList.toggle('show'); imagePickerPopup.style.display = 'none'; });
-            logoutButton.addEventListener('click', () => { localStorage.clear(); auth.signOut(); });
-            document.addEventListener('click', e => { if (!profilePopup.contains(e.target) && !profileIcon.contains(e.target)) { profilePopup.classList.remove('show'); } });
-            changePhotoButton.addEventListener('click', e => { e.stopPropagation(); imagePickerPopup.style.display = imagePickerPopup.style.display === 'block' ? 'none' : 'block'; });
+            profileIcon.addEventListener('click', e => {
+                e.stopPropagation();
+                profilePopup.classList.toggle('show');
+                imagePickerPopup.style.display = 'none';
+            });
+
+            logoutButton.addEventListener('click', () => {
+                auth.signOut();
+            });
+
+            document.addEventListener('click', e => {
+                if (!profilePopup.contains(e.target) && !profileIcon.contains(e.target)) {
+                    profilePopup.classList.remove('show');
+                }
+            });
+            
+            changePhotoButton.addEventListener('click', e => {
+                e.stopPropagation();
+                imagePickerPopup.style.display = imagePickerPopup.style.display === 'block' ? 'none' : 'block';
+            });
+
             imageChoices.forEach(choice => {
                 const imgSrc = choice.dataset.imgSrc;
                 choice.style.backgroundImage = `url(${imgSrc})`;
                 choice.addEventListener('click', () => {
                     setProfileImage(imgSrc);
-                    localStorage.setItem('profileImageUrl', imgSrc);
+                    if (currentUser) {
+                        localStorage.setItem(`profileImageUrl_${currentUser.uid}`, imgSrc);
+                    }
                     imagePickerPopup.style.display = 'none';
                 });
             });
+            
             popupWithdrawButton.addEventListener('click', () => {
                 if (popupWithdrawButton.disabled) {
                     goalModal.classList.add('show');
@@ -794,6 +805,7 @@
                     alert("Withdrawal Process Started!");
                 }
             });
+
             goalModalCloseButton.addEventListener('click', () => {
                 goalModal.classList.add('dismiss');
                 setTimeout(() => {

@@ -6,15 +6,10 @@
     <title>Earn - BeeBeast</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
     <style>
-        /* 
-        ========================================
-        CSS STYLES (Properly Formatted)
-        ========================================
-        */
-
         :root {
             --background-color: #f4f6f8;
             --card-color: #ffffff;
@@ -164,10 +159,15 @@
         .task-card.completed .task-button {
             background-color: var(--success-color);
         }
-        
+
         .timer-container {
             text-align: center;
             margin-bottom: 25px;
+        }
+        
+        .timer-container p {
+            font-size: 16px;
+            color: var(--secondary-text-color);
         }
 
         .timer-text {
@@ -204,11 +204,9 @@
     </style>
 </head>
 <body>
-    
     <header class="header">
         <div class="logo">Bee<span class="beast">Beast</span></div>
     </header>
-    
     <main class="main-content">
         <h1 class="page-title">Complete Tasks & Earn</h1>
         <div class="timer-container" id="timer-container" style="display: none;">
@@ -217,39 +215,23 @@
         </div>
         <div id="task-grid" class="task-grid"></div>
     </main>
-    
     <div id="toast-notification" class="toast"></div>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            const firebaseConfig = {
-                apiKey: "AIzaSyC6UH9ItgAF006kc95OQgoTvpD8yGqHmhs",
-                authDomain: "auth-64fa4.firebaseapp.com",
-                databaseURL: "https://auth-64fa4-default-rtdb.firebaseio.com",
-                projectId: "auth-64fa4",
-                storageBucket: "auth-64fa4.firebasestorage.app",
-                messagingSenderId: "859507228555",
-                appId: "1:859507228555:web:f4d4a39a9aa44e0d1d798e",
-                measurementId: "G-C8T3EL92VR"
-            };
-
+            const firebaseConfig = { /* Your firebase config */ };
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
+            const db = firebase.database();
             
             const taskGrid = document.getElementById('task-grid');
             const timerContainer = document.getElementById('timer-container');
             const refreshTimerEl = document.getElementById('refresh-timer');
             const REFRESH_INTERVAL = 5 * 60 * 1000;
-
-            auth.onAuthStateChanged(user => {
-                if (!user) {
-                    window.location.replace('index.html');
-                }
-            });
+            let currentUser = null;
 
             const allTasks = [
                 { id: 1, title: 'Explore Partner Site', duration: 15, reward: 0.0012, link: 'https://www.profitableratecpm.com/ycdygh69?key=0eb9d3595013b53c1130b51e528c11d1' },
@@ -260,52 +242,62 @@
                 { id: 6, title: 'Learn More Here', duration: 18, reward: 0.0018, link: 'https://www.profitableratecpm.com/v5i0ng36?key=3f342480fb8374d2dbc362af27bbc3f4' }
             ];
 
-            function checkTasksStatus() {
-                const completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
-                if (completedTasks.length >= allTasks.length) {
-                    showRefreshTimer();
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    checkTasksStatus();
                 } else {
-                    renderTaskCards();
+                    window.location.replace('index.html');
                 }
+            });
+
+            function checkTasksStatus() {
+                if (!currentUser) return;
+                const userTasksRef = db.ref(`users/${currentUser.uid}/tasks`);
+                
+                userTasksRef.once('value', snapshot => {
+                    const userData = snapshot.val() || { completed: [], lastRefreshTime: 0 };
+                    const completedTasks = userData.completed || [];
+                    
+                    if (completedTasks.length >= allTasks.length) {
+                        showRefreshTimer(userData.lastRefreshTime);
+                    } else {
+                        renderTaskCards(completedTasks);
+                    }
+                });
             }
             
-            function renderTaskCards() {
+            function renderTaskCards(completedTasks = []) {
                 taskGrid.innerHTML = '';
                 timerContainer.style.display = 'none';
-                const completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
 
                 allTasks.forEach(task => {
                     const isCompleted = completedTasks.includes(task.id);
                     const taskCard = document.createElement('div');
                     taskCard.className = isCompleted ? 'task-card completed' : 'task-card';
-
+                    
                     taskCard.innerHTML = `
                         <i class="material-icons-round card-icon">${isCompleted ? 'check_circle' : 'public'}</i>
                         <h3 class="task-title">${task.title}</h3>
-                        <p class="task-description">Complete a simple task for <strong>${task.duration} seconds</strong> to get your reward.</p>
+                        <p class="task-description">Complete a simple task for <strong>40 seconds</strong> to get your reward.</p>
                         <p class="task-reward">$${task.reward.toFixed(4)}</p>
                         <button class="task-button" ${isCompleted ? 'disabled' : ''}>${isCompleted ? 'Task Completed' : 'Start Task'}</button>
                     `;
+                    
                     if (!isCompleted) {
                         taskCard.querySelector('.task-button').addEventListener('click', () => {
-                            window.location.href = `iframe.html?taskId=${task.id}&duration=${task.duration}&reward=${task.reward}&link=${encodeURIComponent(task.link)}`;
+                            window.location.href = `iframe.html?taskId=${task.id}&reward=${task.reward}&link=${encodeURIComponent(task.link)}`;
                         });
                     }
                     taskGrid.appendChild(taskCard);
                 });
             }
 
-            function showRefreshTimer() {
+            function showRefreshTimer(lastRefreshTime = 0) {
                 taskGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text-color);">You have completed all available tasks for now. Please wait for them to refresh.</p>';
                 timerContainer.style.display = 'block';
                 
-                let lastRefreshTime = parseInt(localStorage.getItem('lastRefreshTime')) || 0;
-                if (lastRefreshTime === 0) {
-                    lastRefreshTime = Date.now();
-                    localStorage.setItem('lastRefreshTime', lastRefreshTime.toString());
-                }
-
-                let timePassed = Date.now() - lastRefreshTime;
+                const timePassed = Date.now() - lastRefreshTime;
 
                 if (timePassed >= REFRESH_INTERVAL) {
                     resetTasks();
@@ -327,19 +319,25 @@
             }
 
             function resetTasks() {
-                localStorage.removeItem('completedTasks');
-                localStorage.setItem('lastRefreshTime', Date.now().toString());
-                const refreshButton = document.createElement('button');
-                refreshButton.className = 'task-button';
-                refreshButton.textContent = 'Refresh Tasks';
-                refreshButton.onclick = () => window.location.reload();
-                taskGrid.innerHTML = '';
-                timerContainer.style.display = 'none';
-                taskGrid.appendChild(refreshButton);
+                if (!currentUser) return;
+                const userRef = db.ref(`users/${currentUser.uid}`);
+                userRef.update({
+                    'tasks/completed': null, // This removes the completed array
+                    'tasks/lastRefreshTime': Date.now()
+                }).then(() => {
+                    const refreshButton = document.createElement('button');
+                    refreshButton.className = 'task-button';
+                    refreshButton.textContent = 'Refresh Tasks';
+                    refreshButton.onclick = () => window.location.reload();
+                    taskGrid.innerHTML = '';
+                    timerContainer.style.display = 'none';
+                    taskGrid.appendChild(refreshButton);
+                });
             }
-
-            checkTasksStatus();
         });
     </script>
+
+    <!-- Adsterra Social Bar Ad Code -->
+    <script type='text/javascript' src='//pl27259770.profitableratecpm.com/a4/29/7a/a4297aecf0735a486971d080329154ba.js'></script>
 </body>
 </html>
