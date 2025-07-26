@@ -6,17 +6,13 @@
     <title>Task in Progress... - BeeBeast</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
     <style>
         :root {
-            --background-color: #f4f6f8;
             --card-color: #ffffff;
             --primary-text-color: #000000;
             --secondary-text-color: #5f6368;
             --accent-color: #ffa500;
-            --white-color: #ffffff;
-            --success-color: #4CAF50;
         }
 
         html, 
@@ -38,36 +34,21 @@
 
         .top-bar {
             background-color: var(--card-color);
-            padding: 10px 20px;
+            padding: 15px 20px;
             text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             z-index: 10;
         }
 
-        .timer-text {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin: 5px 0;
-        }
-
         .status-text {
-            font-size: 14px;
-            color: var(--secondary-text-color);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-text-color);
             margin: 0;
         }
 
-        .back-button {
-            display: none;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 15px;
-            background-color: var(--success-color);
-            color: var(--white-color);
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
+        .status-text span {
+            color: var(--accent-color);
         }
 
         .iframe-wrapper {
@@ -86,99 +67,26 @@
 <body>
     <div class="task-container">
         <div class="top-bar">
-            <p id="status-text" class="status-text">Please wait for the page to load...</p>
-            <h2 id="timer" class="timer-text">Loading Ad...</h2>
-            <button id="back-button" class="back-button">Go Back</button>
+            <p id="status-text" class="status-text">
+                Please interact with content for <span>40 seconds</span> & then press the back button.
+            </p>
         </div>
         <div class="iframe-wrapper">
-            <iframe id="task-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation-by-user-activation"></iframe>
+            <iframe id="task-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
         </div>
     </div>
     
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            const firebaseConfig = { /* Your firebase config */ };
-            firebase.initializeApp(firebaseConfig);
-            const auth = firebase.auth();
-            const db = firebase.database();
-
-            const timerEl = document.getElementById('timer');
-            const statusTextEl = document.getElementById('status-text');
-            const backButtonEl = document.getElementById('back-button');
             const taskIframe = document.getElementById('task-iframe');
-
             const params = new URLSearchParams(window.location.search);
-            const taskId = parseInt(params.get('taskId'));
-            const reward = parseFloat(params.get('reward'));
             const link = decodeURIComponent(params.get('link'));
-            const DURATION = 40;
 
-            if (!taskId || !reward || !link) {
-                statusTextEl.textContent = 'Error: Task details are missing. Please go back.';
-                return;
+            if (link) {
+                taskIframe.src = link;
+            } else {
+                document.getElementById('status-text').textContent = 'Error: Invalid Task Link.';
             }
-
-            let timerStarted = false;
-
-            function startTimer() {
-                if (timerStarted) return;
-                timerStarted = true;
-
-                statusTextEl.textContent = 'Please wait for the timer to finish...';
-                let timeLeft = DURATION;
-                timerEl.textContent = `${timeLeft} seconds remaining`;
-
-                const countdown = setInterval(() => {
-                    timeLeft--;
-                    timerEl.textContent = `${timeLeft} seconds remaining`;
-
-                    if (timeLeft <= 0) {
-                        clearInterval(countdown);
-                        
-                        timerEl.textContent = 'Task Completed!';
-                        statusTextEl.textContent = 'Your reward has been added. You can now go back.';
-                        backButtonEl.style.display = 'inline-block';
-                        
-                        const user = auth.currentUser;
-                        if (user) {
-                            const userRef = db.ref(`users/${user.uid}`);
-                            userRef.transaction(userData => {
-                                if (userData) {
-                                    if (!userData.balance) userData.balance = 0;
-                                    if (!userData.tasks) userData.tasks = { completed: [] };
-                                    if (!userData.tasks.completed) userData.tasks.completed = [];
-                                    
-                                    if (!userData.tasks.completed.includes(taskId)) {
-                                        userData.balance += reward;
-                                        userData.tasks.completed.push(taskId);
-                                    }
-                                } else {
-                                    // If user data is null, create it
-                                    userData = {
-                                        balance: reward,
-                                        tasks: { completed: [taskId] }
-                                    };
-                                }
-                                return userData;
-                            });
-                        }
-                    }
-                }, 1000);
-            }
-
-            // A more reliable way to start the timer
-            setTimeout(startTimer, 1500); // Start timer after 1.5 seconds
-
-            taskIframe.src = link;
-
-            backButtonEl.addEventListener('click', () => {
-                window.location.href = 'task.html?task_completed=true';
-            });
         });
     </script>
 </body>
