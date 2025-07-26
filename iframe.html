@@ -9,6 +9,11 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
     <style>
+        /* 
+        ========================================
+        CSS STYLES (Properly Formatted)
+        ========================================
+        */
         :root {
             --background-color: #f4f6f8;
             --card-color: #ffffff;
@@ -57,19 +62,6 @@
             margin: 0;
         }
 
-        .back-button {
-            display: none;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 15px;
-            background-color: var(--success-color);
-            color: var(--white-color);
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
         .iframe-wrapper {
             flex-grow: 1;
             border: none;
@@ -84,11 +76,11 @@
     </style>
 </head>
 <body>
+
     <div class="task-container">
         <div class="top-bar">
             <p id="status-text" class="status-text">Please wait for the page to load...</p>
             <h2 id="timer" class="timer-text">Loading Ad...</h2>
-            <button id="back-button" class="back-button">Go Back</button>
         </div>
         <div class="iframe-wrapper">
             <iframe id="task-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation-by-user-activation"></iframe>
@@ -118,7 +110,6 @@
 
             const timerEl = document.getElementById('timer');
             const statusTextEl = document.getElementById('status-text');
-            const backButtonEl = document.getElementById('back-button');
             const taskIframe = document.getElementById('task-iframe');
 
             const params = new URLSearchParams(window.location.search);
@@ -150,8 +141,7 @@
                         clearInterval(countdown);
                         
                         timerEl.textContent = 'Task Completed!';
-                        statusTextEl.textContent = 'Your reward has been added. You can now go back.';
-                        backButtonEl.style.display = 'inline-block';
+                        statusTextEl.textContent = 'Redirecting you back...';
                         
                         const user = auth.currentUser;
                         if (user) {
@@ -173,20 +163,22 @@
                                     };
                                 }
                                 return userData;
+                            }).then(() => {
+                                // Redirect ONLY after database has been updated
+                                window.location.href = 'task.html?task_completed=true';
                             });
+                        } else {
+                             // Fallback if user is somehow not logged in
+                            window.location.href = 'task.html';
                         }
                     }
                 }, 1000);
             }
             
-            // Set a small delay before starting the timer to allow iframe to begin loading
+            // Set a small delay to allow iframe to begin loading
             setTimeout(startTimer, 1500);
 
             taskIframe.src = link;
-
-            backButtonEl.addEventListener('click', () => {
-                window.location.href = 'task.html?task_completed=true';
-            });
         });
     </script>
 </body>
