@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasks - BeeBeast</title>
     
+    <!-- Google Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
@@ -331,6 +332,12 @@
                 `;
             }
 
+            function showToast(message, isError = false) {
+                toast.textContent = message;
+                toast.className = isError ? 'toast show error' : 'toast show';
+                setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            }
+            
             function checkUrlForStatus() {
                 const params = new URLSearchParams(window.location.search);
                 if (params.get('task_completed') === 'true') {
@@ -359,7 +366,7 @@
                 taskGrid.innerHTML = '';
                 timerContainer.style.display = 'none';
 
-                allTasks.forEach((task, index) => {
+                allTasks.forEach(task => {
                     const isCompleted = completedTasks.includes(task.id);
                     const taskCard = document.createElement('div');
                     taskCard.className = isCompleted ? 'task-card completed' : 'task-card';
@@ -378,27 +385,11 @@
                         });
                     }
                     taskGrid.appendChild(taskCard);
-                    
-                    // Add an Adsterra Native Banner ad card after every 2 task cards
-                    if ((index + 1) % 2 === 0) {
-                        const adCard = document.createElement('div');
-                        adCard.className = 'ad-card';
-                        adCard.innerHTML = `
-                            <p>Sponsored Content</p>
-                            <div class="ad-container">
-                                <!-- Adsterra Native Banner Code -->
-                                <script async="async" data-cfasync="false" src="//pl27259780.profitableratecpm.com/0b68a123d76b017fd3c9e321cd962227/invoke.js"><\/script>
-                                <div id="container-0b68a123d76b017fd3c9e321cd962227"></div>
-                                <!-- End of Adsterra Code -->
-                            </div>
-                        `;
-                        taskGrid.appendChild(adCard);
-                    }
                 });
             }
 
             function showRefreshTimer(lastRefreshTime = 0) {
-                taskGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text-color);">You have completed all available tasks for now. Please wait for them to refresh.</p>';
+                taskGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text-color);">You have completed all available tasks. Please wait for them to refresh.</p>';
                 timerContainer.style.display = 'block';
                 
                 if (lastRefreshTime === 0) {
@@ -443,16 +434,9 @@
                     taskGrid.appendChild(refreshButton);
                 });
             }
-
-            function showToast(message, isError = false) {
-                toast.textContent = message;
-                toast.className = isError ? 'toast show error' : 'toast show';
-                setTimeout(() => { toast.classList.remove('show'); }, 3000);
-            }
         });
     </script>
     
-    <!-- Adsterra Social Bar Ad Code -->
     <script type='text/javascript' src='//pl27259770.profitableratecpm.com/a4/29/7a/a4297aecf0735a486971d080329154ba.js'></script>
 </body>
 </html>
